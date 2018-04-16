@@ -1,0 +1,197 @@
+const express = require('express')
+const formidable = require('formidable')
+const path = require('path')
+const fs = require('fs')
+const cheerio = require('cheerio')
+
+module.exports = function () {
+  const router = express.Router()
+  router.post('/wallchart', function (req, res) {
+    let form = new formidable.IncomingForm()
+    form.uploadDir = path.join(__dirname, '..', '..', '..', 'static')
+    // Rename it to its orignal name when uploaded successfully
+    form.on('file', function (field, file) {
+      let index = file.name.lastIndexOf('.')
+      let suffix = file.name.slice(index)
+      let name = 'wallchart' + suffix.toLowerCase()
+      let filepath = path.join(form.uploadDir, name)
+      if (fs.existsSync(filepath)) {
+        fs.unlinkSync(filepath)
+      }
+      fs.renameSync(file.path, filepath)
+    })
+    form.on('error', function(err) {
+      console.log('An error has occured: \n' + err)
+      res.status(500).send({message: 'Failed to upload wallchart file'})
+    })
+    // Send a response to the client once all the files have been uploaded
+    form.on('end', function () {
+      res.json({status: 'SUCCESS'})
+    })
+    // Parse the incoming request containing the form data
+    form.parse(req)
+  })
+
+  router.delete('/wallchart', function (req, res) {
+    let uploadDir = path.join(__dirname, '..', '..', '..', 'static')
+    let filenames = ['wallchart.html', 'wallchart.xls']
+    for (let i = 0; i < filenames.length; i++) {
+      let filepath = path.join(uploadDir, filenames[i])
+      if (fs.existsSync(filepath)) {
+        fs.unlinkSync(filepath)
+      }
+    }
+    res.json({status: 'SUCCESS'})
+  })
+
+  router.get('/wallchart', function (req, res) {
+    let uploadDir = path.join(__dirname, '..', '..', '..', 'static')
+    let filepath = path.join(uploadDir, 'wallchart.html')
+    let rst = {}
+    if (fs.existsSync(filepath)) {
+      fs.readFile(filepath, 'utf8', function (err, data) {
+        const $ = cheerio.load('' + data + '')
+        $('BODY > div').each(function (i, elem) {
+          const title = $(elem).find('h3').text()
+          if (title.indexOf('Master') > -1) {
+            rst.master = $.html($(elem).find('table'))
+          } else if (title.indexOf('U2000') > -1) {
+            rst.u2000 = $.html($(elem).find('table'))
+          } else if (title.indexOf('U1600') > -1) {
+            rst.u1600 = $.html($(elem).find('table'))
+          }
+        })
+        res.json(rst)
+      })
+    } else {
+      res.json(rst)
+    }
+  })
+
+  router.post('/standings', function (req, res) {
+    let form = new formidable.IncomingForm()
+    form.uploadDir = path.join(__dirname, '..', '..', '..', 'static')
+    // Rename it to its orignal name when uploaded successfully
+    form.on('file', function (field, file) {
+      let index = file.name.lastIndexOf('.')
+      let suffix = file.name.slice(index)
+      let name = 'standings' + suffix.toLowerCase()
+      let filepath = path.join(form.uploadDir, name)
+      if (fs.existsSync(filepath)) {
+        fs.unlinkSync(filepath)
+      }
+      fs.renameSync(file.path, filepath)
+    })
+    form.on('error', function(err) {
+      console.log('An error has occured: \n' + err)
+      res.status(500).send({message: 'Failed to upload standings file'})
+    })
+    // Send a response to the client once all the files have been uploaded
+    form.on('end', function () {
+      res.json({status: 'SUCCESS'})
+    })
+    // Parse the incoming request containing the form data
+    form.parse(req)
+  })
+
+  router.delete('/standings', function (req, res) {
+    let uploadDir = path.join(__dirname, '..', '..', '..', 'static')
+    let filenames = ['standings.html', 'standings.xls']
+    for (let i = 0; i < filenames.length; i++) {
+      let filepath = path.join(uploadDir, filenames[i])
+      if (fs.existsSync(filepath)) {
+        fs.unlinkSync(filepath)
+      }
+    }
+    res.json({status: 'SUCCESS'})
+  })
+
+  router.get('/standings', function (req, res) {
+    let uploadDir = path.join(__dirname, '..', '..', '..', 'static')
+    let filepath = path.join(uploadDir, 'standings.html')
+    let rst = {}
+    if (fs.existsSync(filepath)) {
+      fs.readFile(filepath, 'utf8', function (err, data) {
+        const $ = cheerio.load('' + data + '')
+        $('BODY > div').each(function (i, elem) {
+          const title = $(elem).find('h3').text()
+          if (title.indexOf('Master') > -1) {
+            rst.master = $.html($(elem).find('table'))
+          } else if (title.indexOf('U2000') > -1) {
+            rst.u2000 = $.html($(elem).find('table'))
+          } else if (title.indexOf('U1600') > -1) {
+            rst.u1600 = $.html($(elem).find('table'))
+          }
+        })
+        res.json(rst)
+      })
+    } else {
+      res.json(rst)
+    }
+  })
+
+  router.post('/pairings/:section', function (req, res) {
+    let section = req.params.section
+    let form = new formidable.IncomingForm()
+    form.uploadDir = path.join(__dirname, '..', '..', '..', 'static')
+    // Rename it to its orignal name when uploaded successfully
+    form.on('file', function (field, file) {
+      let index = file.name.lastIndexOf('.')
+      let suffix = file.name.slice(index)
+      let name = 'pairings-' + section + suffix.toLowerCase()
+      let filepath = path.join(form.uploadDir, name)
+      if (fs.existsSync(filepath)) {
+        fs.unlinkSync(filepath)
+      }
+      fs.renameSync(file.path, filepath)
+    })
+    form.on('error', function(err) {
+      console.log('An error has occured: \n' + err)
+      res.status(500).send({message: `Failed to upload the ${section} section's pairing file`})
+    })
+    // Send a response to the client once all the files have been uploaded
+    form.on('end', function () {
+      res.json({status: 'SUCCESS'})
+    })
+    // Parse the incoming request containing the form data
+    form.parse(req)
+  })
+
+  router.delete('/pairings/:section', function (req, res) {
+    let section = req.params.section
+    let uploadDir = path.join(__dirname, '..', '..', '..', 'static')
+    let filenames = [`pairings-${section}.html`, `pairings-${section}.xls`]
+    for (let i = 0; i < filenames.length; i++) {
+      let filepath = path.join(uploadDir, filenames[i])
+      if (fs.existsSync(filepath)) {
+        fs.unlinkSync(filepath)
+      }
+    }
+    res.json({status: 'SUCCESS'})
+  })
+
+  router.get('/pairings/:section', function (req, res) {
+    let section = req.params.section
+    let uploadDir = path.join(__dirname, '..', '..', '..', 'static')
+    let filepath = path.join(uploadDir, `pairings-${section}.html`)
+    let rst = {}
+    if (fs.existsSync(filepath)) {
+      fs.readFile(filepath, 'utf8', function (err, data) {
+        const $ = cheerio.load('' + data + '')
+        $('BODY > div').each(function (i, elem) {
+          const title = $(elem).find('h3').text()
+          const str = title.match(/round \d/gi)
+          if (str && str.length) {
+            rst.round = str[0].match(/\d/)[0]
+          }
+          rst[section] = $.html($(elem).find('table'))
+        })
+        res.json(rst)
+      })
+    } else {
+      res.json(rst)
+    }
+  })
+
+  return router
+}
