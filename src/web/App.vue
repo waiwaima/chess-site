@@ -20,9 +20,9 @@ v-app
           v-btn(:style="homeStyle" @click.native="routeTo('home')" flat) Home
           // v-btn(:style="playersStyle" @click.native="routeTo('players')" flat) Players
           // v-btn(:style="pairingsStyle" @click.native="routeTo('pairings')" flat) Pairings & Results
-          v-btn(:style="eventsStyle" @click.native="routeTo('events')" flat) Finished Events
           v-btn(:style="photosStyle" @click.native="routeTo('photos')" flat) Photos
           v-btn(:style="venueStyle" @click.native="routeTo('venue')" flat) Venue
+          v-btn(:style="eventsStyle" @click.native="routeTo('events')" flat) Finished Events
           v-btn(v-if="user === 'admin'" :style="logoutStyle" @click.native="logout" flat) Sign Out
           // v-btn(v-if="user !== 'admin'" :style="loginStyle" @click.native="routeTo('login')" flat) Sign In
         v-menu.hidden-sm-and-up
@@ -59,9 +59,9 @@ export default {
         {text: 'Home', value: 'home', style: 'homeStyle'},
         // {text: 'Players', value: 'players', style: 'playersStyle'},
         // {text: 'Pairings & Results', value: 'pairings', style: 'pairingsStyle'},
-        {text: 'Finished Events', value: 'events', style: 'eventsStyle'},
         {text: 'Photos', value: 'photos', style: 'photosStyle'},
-        {text: 'Venue', value: 'venue', style: 'venueStyle'}
+        {text: 'Venue', value: 'venue', style: 'venueStyle'},
+        {text: 'Finished Events', value: 'events', style: 'eventsStyle'}
       ],
       active: 'home'
     }
