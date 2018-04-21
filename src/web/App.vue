@@ -42,7 +42,7 @@ v-app
     v-layout(column justify-start)
       v-container.view-background(fluid)
         transition
-          keep-alive(:include="['Home', 'Player', 'Pairing', 'Photo']")
+          keep-alive(:include="['Home', 'Player', 'Pairing', 'Photo', 'Events']")
             router-view
 </template>
 
