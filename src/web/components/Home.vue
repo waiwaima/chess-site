@@ -20,7 +20,7 @@
                   v-layout(column justify-center)
                     span.detail 3SS, G/80 d5
                     span.detail Rounds: 10:00am / 1:45pm / 5:15pm
-      // v-flex(xs12)
+      v-flex(xs12)
         v-layout.section(row wrap)
           v-card.first
             v-layout(column align-start)
@@ -30,7 +30,7 @@
               div.content
                 span.subtitle Entry Fee:
                 ul.ml-4
-                  li $45 by 1/20, $55 by 2/10, $65 onsite
+                  li $55 by 5/5, $65 onsite
                   li $10 discount for 2300+
                   li GM/IM/FM/WGM/WIM/WFM free
               div.content
@@ -38,7 +38,7 @@
                 ul.ml-4
                   li 1st -- $150, 2nd -- $100
                   li Top U2200 -- $80
-              v-layout.action(row justify-center)
+              // v-layout.action(row justify-center)
                 v-btn(small @click.native="register") Register
           v-card.other
             v-layout(column align-start)
@@ -48,14 +48,14 @@
               div.content
                 span.subtitle Entry Fee:
                 ul.ml-4
-                  li $35 by 1/20, $45 by 2/10, $55 onsite
+                  li $45 by 5/5, $55 onsite
                   li $10 discount for 1950+
               div.content
                 span.subtitle Money Prizes:
                 ul.ml-4
                   li 1st -- $150
                   li 2nd -- $100
-              v-layout.action.action-mt(row justify-center)
+              // v-layout.action.action-mt(row justify-center)
                 v-btn(small @click.native="register") Register
           v-card.last
             v-layout(column align-start)
@@ -65,14 +65,14 @@
               div.content
                 span.subtitle Entry Fee:
                 ul.ml-4
-                  li $35 by 1/20, $45 by 2/10, $55 onsite
+                  li $45 by 5/5, $55 onsite
                   li $10 discount for 1550+
               div.content
                 span.subtitle Money Prizes:
                 ul.ml-4
                   li 1st -- $120
                   li 2nd -- $80
-              v-layout.action.action-mt(row justify-center)
+              // v-layout.action.action-mt(row justify-center)
                 v-btn(small @click.native="register") Register
       // div.mt-3.ml-3.mr-1.align-left * February 2018 supplemental rating is used for registration/pairing/prize purposes. Live rating on the registration date can be used for registration as well.
       // div.mt-1.ml-3.mr-1.align-left
