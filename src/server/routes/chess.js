@@ -130,6 +130,23 @@ module.exports = function () {
     }
   })
 
+  router.get('/standings/:tournament', function (req, res) {
+    let tournament = req.params.tournament
+    let filename = 'standings-' + tournament + '.html'
+    let uploadDir = path.join(__dirname, '..', '..', '..', 'static')
+    let filepath = path.join(uploadDir, filename)
+    let rst = {}
+    if (fs.existsSync(filepath)) {
+      fs.readFile(filepath, 'utf8', function (err, data) {
+        const $ = cheerio.load('' + data + '')
+        rst.standing = $.html($('BODY'))
+        res.json(rst)
+      })
+    } else {
+      res.json(rst)
+    }
+  })
+
   router.post('/pairings/:section', function (req, res) {
     let section = req.params.section
     let form = new formidable.IncomingForm()
