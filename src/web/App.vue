@@ -10,7 +10,7 @@ v-app
             span.org.hidden-md-and-up BECA
           v-layout.ml-3.hidden-sm-and-down
             div
-              span.chess-com in cooperation with
+              span.chess-com In Cooperation With
             div.chess-com-logo-panel
               span.chess-com-logo
                 a(href="https://www.chess.com/?ref_id=11089448" target="_blank") Chess
@@ -20,8 +20,8 @@ v-app
           v-btn(:style="homeStyle" @click.native="routeTo('home')" flat) Home
           // v-btn(:style="playersStyle" @click.native="routeTo('players')" flat) Players
           // v-btn(:style="pairingsStyle" @click.native="routeTo('pairings')" flat) Pairings & Results
-          v-btn(:style="photosStyle" @click.native="routeTo('photos')" flat) Photos
           v-btn(:style="venueStyle" @click.native="routeTo('venue')" flat) Venue
+          v-btn(:style="photosStyle" @click.native="routeTo('photos')" flat) Photos
           v-btn(:style="eventsStyle" @click.native="routeTo('events')" flat) Finished Events
           v-btn(v-if="user === 'admin'" :style="logoutStyle" @click.native="logout" flat) Sign Out
           // v-btn(v-if="user !== 'admin'" :style="loginStyle" @click.native="routeTo('login')" flat) Sign In
@@ -33,7 +33,7 @@ v-app
               v-list-tile-title(v-text="item.text")
   v-layout.hidden-md-and-up(row justify-end style="padding: 8px 16px 16px 16px; max-height: 45px")
     div
-      span.chess-com in cooperation with
+      span.chess-com In Cooperation With
     div.chess-com-logo-panel
       span.chess-com-logo
         a(href="https://www.chess.com/?ref_id=11089448" target="_blank") Chess
@@ -42,7 +42,7 @@ v-app
     v-layout(column justify-start)
       v-container.view-background(fluid)
         transition
-          keep-alive(:include="['Home', 'Player', 'Pairing', 'Photo', 'Events']")
+          keep-alive(:include="['Home', 'Player', 'Pairing', 'Photo']")
             router-view
 </template>
 
@@ -59,8 +59,8 @@ export default {
         {text: 'Home', value: 'home', style: 'homeStyle'},
         // {text: 'Players', value: 'players', style: 'playersStyle'},
         // {text: 'Pairings & Results', value: 'pairings', style: 'pairingsStyle'},
-        {text: 'Photos', value: 'photos', style: 'photosStyle'},
         {text: 'Venue', value: 'venue', style: 'venueStyle'},
+        {text: 'Photos', value: 'photos', style: 'photosStyle'},
         {text: 'Finished Events', value: 'events', style: 'eventsStyle'}
       ],
       active: 'home'
@@ -174,7 +174,7 @@ export default {
 .chess-com
   position: relative;
   top: 6px
-  font-size: 0.9em
+  font-size: 1.0em
 .chess-com-logo
   position: absolute
   text-indent: -9999px

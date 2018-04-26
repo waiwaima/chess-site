@@ -18,9 +18,9 @@
                     span.detail 1125 Boston-Providence Turnpike, Norwood, MA
                 v-flex(xs12 align-end flexbox)
                   v-layout(column justify-center)
-                    span.detail 3SS, G/80 d5
-                    span.detail Rounds: 10:00am / 1:45pm / 5:15pm
-      v-flex(xs12)
+                    span.detail 3RR, G/80 d5
+                    span.detail Rounds: 10:00am / 2:00pm / 5:30pm
+      // v-flex(xs12)
         v-layout.section(row wrap)
           v-card.first
             v-layout(column align-start)
@@ -38,7 +38,7 @@
                 ul.ml-4
                   li 1st -- $150, 2nd -- $100
                   li Top U2200 -- $80
-              // v-layout.action(row justify-center)
+              v-layout.action(row justify-center)
                 v-btn(small @click.native="register") Register
           v-card.other
             v-layout(column align-start)
@@ -55,7 +55,7 @@
                 ul.ml-4
                   li 1st -- $150
                   li 2nd -- $100
-              // v-layout.action.action-mt(row justify-center)
+              v-layout.action.action-mt(row justify-center)
                 v-btn(small @click.native="register") Register
           v-card.last
             v-layout(column align-start)
@@ -72,7 +72,7 @@
                 ul.ml-4
                   li 1st -- $120
                   li 2nd -- $80
-              // v-layout.action.action-mt(row justify-center)
+              v-layout.action.action-mt(row justify-center)
                 v-btn(small @click.native="register") Register
       // div.mt-3.ml-3.mr-1.align-left * February 2018 supplemental rating is used for registration/pairing/prize purposes. Live rating on the registration date can be used for registration as well.
       // div.mt-1.ml-3.mr-1.align-left
