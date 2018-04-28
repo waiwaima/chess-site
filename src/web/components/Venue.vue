@@ -1,6 +1,6 @@
 <template lang="pug">
 .venue
-  v-layout(column)
+  v-layout.restaurant(column)
     .highlight Nearby Restaurants
     div.mt-1.mr-1
       span.subtitle On site restaurant:
@@ -61,6 +61,14 @@
         li Chili’s
         li Papa Gino’s
         li Texas Roadhouse
+  v-card.photo.mt-3
+    v-card-title(primary-title)
+      div
+        h3.pl-2 Venue
+    v-container(fluid grid-list-sm)
+      v-layout(row wrap)
+        v-flex(xs12 sm6 v-for="i in 4" :key="i")
+          img.image(:src="`/static/venue-${i}.jpg`" alt="lorem" width="100%" height="100%")
 </template>
 
 <script>
@@ -75,6 +83,8 @@ export default {
   padding: 16px 16px
   background-color: #f7f7f6
   text-align: left
+.restaurant
+  padding: 0 16px
 .align-left
   text-align: left
 .highlight
@@ -86,4 +96,9 @@ export default {
   margin-left: 32px
 .subtitle
   font-weight: 600
+@media screen and (max-device-width: 600px)
+  .venue
+    padding: 16px 0
+  .restaurant
+    padding: 0 16px
 </style>
