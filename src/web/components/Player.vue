@@ -1,7 +1,7 @@
 <template lang="pug">
 .player
-  v-layout(column justify-start)
-    // v-flex
+  // v-layout(column justify-start)
+    v-flex
       v-layout(row justify-start)
         v-icon date_range
         span.ml-2 Advance entries through {{ today }}
