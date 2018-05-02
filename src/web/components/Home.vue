@@ -8,18 +8,20 @@
             v-container.tournament(fill-height fluid)
               v-layout(column)
                 v-flex(xs12 align-end flexbox)
-                    span.name 2nd Boston Elite Chess Tournament
+                    span.name 2nd Boston Elite Chess Quads Invitational
                 v-flex(xs12 align-end flexbox)
                   v-layout(column justify-center)
                     span.detail Sunday, May 6, 2018
                 v-flex(xs12 align-end flexbox)
                   v-layout(column)
-                    span.detail Four Points by Sheraton Norwood
-                    span.detail 1125 Boston-Providence Turnpike, Norwood, MA
+                    // span.detail Four Points by Sheraton Norwood
+                    // span.detail 1125 Boston-Providence Turnpike, Norwood, MA
+                    span.detail SMART School
+                    span.detail 1320 Centre St, Newton, MA
                 v-flex(xs12 align-end flexbox)
                   v-layout(column justify-center)
                     span.detail 3RR, G/80 d5
-                    span.detail Rounds: 10:00am / 2:00pm / 5:30pm
+                    span.detail Rounds: 10:15am / 2:00pm / 5:30pm
       // v-flex(xs12)
         v-layout.section(row wrap)
           v-card.first
@@ -82,14 +84,29 @@
         span.ml-1 or via
         a(href="http://masschess.org/Events/Event_Details.aspx?Event_ID=6197" target="_blank")
           span.ml-1 the MACA website.
-      div.mt-1.ml-3.mr-1.align-left
+      // div.mt-1.ml-3.mr-1.align-left
         span.subtitle Schedule:
         span.ml-2 Onsite registration 9:00am - 9:30am. All byes need to be declared before the 1st round; last round 0 point bye only.
-      div.mt-1.ml-3.mr-1.align-left
+      // div.mt-1.ml-3.mr-1.align-left
         span.subtitle Contact:
         span.ml-2 Questions to
         span(style="color: blue").ml-1 bostonelitechess@gmail.com
-      div.mt-1.ml-3.mr-1.align-left * Please bring your own chess set and clock.
+      // div.mt-1.ml-3.mr-1.align-left * Please bring your own chess set and clock.
+      div.mt-3
+        ul.align-left.mt-2.highlight-ml
+          li
+            span.text-highlight Entry fee:
+            span.ml-1 $45 per person, $30 second sibling.
+          li
+            span.text-highlight Prizes:
+            span.ml-1 $50 for the winner of each quad. If multiple players tie for the first place, the price will be shared equally between all of them, e.g. if two players tie for first place each player gets $25 etc.
+          li
+            a(href="https://translate.google.com/translate?hl=en&sl=de&u=https://de.wikipedia.org/wiki/Leonid_Kritz&prev=search" target="_blank")
+              span GM Leonid Kritz
+            span.ml-1 will be there and analyze games with the players.
+          li Free parking available at the location for the whole day.
+          li Please bring your own chess set and clock.
+          li Contact Leonid Kritz (leonidkritz@gmail.com) if you have any questions.
       // div.mt-3
         .highlight Highlights
         ul.align-left.mt-2.highlight-ml
@@ -106,7 +123,7 @@
           li Full-time college students get 50% discount on entry fee.
       div.mt-3
         .highlight Rule Variations
-        div.mt-1.ml-3.mr-1.align-left
+        // div.mt-1.ml-3.mr-1.align-left
           span.subtitle Late Arrival Forfeit:
           span.ml-2 A player can claim a forfeit no-show win if the opponent arrives
           span.ml-2.text-highlight 30 minutes
@@ -157,7 +174,7 @@ export default {
   text-align: center
 .tournament .name
   color: #cc6553
-  font-size: 2.3em
+  font-size: 1.8em
   font-weight: 600
 .tournament .detail
   color: #cc6553
