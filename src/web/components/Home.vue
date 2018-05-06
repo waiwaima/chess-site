@@ -8,20 +8,20 @@
             v-container.tournament(fill-height fluid)
               v-layout(column)
                 v-flex(xs12 align-end flexbox)
-                    span.name 2nd Boston Elite Chess Quads Invitational
+                    span.name 2nd Boston Elite Chess Tournament
                 v-flex(xs12 align-end flexbox)
                   v-layout(column justify-center)
-                    span.detail Sunday, May 6, 2018
+                    span.detail Date will be announced later
                 v-flex(xs12 align-end flexbox)
                   v-layout(column)
-                    // span.detail Four Points by Sheraton Norwood
-                    // span.detail 1125 Boston-Providence Turnpike, Norwood, MA
-                    span.detail SMART School
-                    span.detail 1320 Centre St, Newton, MA
+                    span.detail Four Points by Sheraton Norwood
+                    span.detail 1125 Boston-Providence Turnpike, Norwood, MA
+                    // span.detail SMART School
+                    // span.detail 1320 Centre St, Newton, MA
                 v-flex(xs12 align-end flexbox)
                   v-layout(column justify-center)
                     span.detail 3RR, G/80 d5
-                    span.detail Rounds: 10:15am / 2:00pm / 5:30pm
+                    span.detail Rounds: 10:00am / 2:00pm / 5:30pm
       // v-flex(xs12)
         v-layout.section(row wrap)
           v-card.first
@@ -92,7 +92,7 @@
         span.ml-2 Questions to
         span(style="color: blue").ml-1 bostonelitechess@gmail.com
       // div.mt-1.ml-3.mr-1.align-left * Please bring your own chess set and clock.
-      div.mt-3
+      // div.mt-3
         ul.align-left.mt-2.highlight-ml
           li
             span.text-highlight Entry fee:
