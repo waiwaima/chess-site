@@ -22,7 +22,7 @@
                   v-layout(column justify-center)
                     span.detail 3RR, G/80 d5
                     span.detail Rounds: 10:00am / 2:00pm / 5:30pm
-      // v-flex(xs12)
+      v-flex(xs12)
         v-layout.section(row wrap)
           v-card.first
             v-layout(column align-start)
@@ -32,7 +32,7 @@
               div.content
                 span.subtitle Entry Fee:
                 ul.ml-4
-                  li $55 by 5/5, $65 onsite
+                  li $55 by x/x, $65 onsite
                   li $10 discount for 2300+
                   li GM/IM/FM/WGM/WIM/WFM free
               div.content
@@ -50,7 +50,7 @@
               div.content
                 span.subtitle Entry Fee:
                 ul.ml-4
-                  li $45 by 5/5, $55 onsite
+                  li $45 by x/x, $55 onsite
                   li $10 discount for 1950+
               div.content
                 span.subtitle Money Prizes:
@@ -67,7 +67,7 @@
               div.content
                 span.subtitle Entry Fee:
                 ul.ml-4
-                  li $45 by 5/5, $55 onsite
+                  li $45 by x/x, $55 onsite
                   li $10 discount for 1550+
               div.content
                 span.subtitle Money Prizes:
@@ -153,6 +153,8 @@
 </template>
 
 <script>
+import router from '../router'
+
 export default {
   name: 'Home',
   data () {
@@ -160,8 +162,7 @@ export default {
   },
   methods: {
     register () {
-      let win = window.open('http://masschess.org/Events/Event_Registration.aspx?Event_ID=6197&Record_ID=3041', '_blank')
-      win.focus()
+      router.push('/register')
     }
   }
 }

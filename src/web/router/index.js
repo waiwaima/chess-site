@@ -7,6 +7,7 @@ import Events from 'components/Events'
 import Photo from 'components/Photo'
 import Venue from 'components/Venue'
 import Login from 'components/Login'
+import Register from 'components/Register'
 
 Vue.use(Router)
 
@@ -40,6 +41,10 @@ export default new Router({
     {
       path: '/login',
       component: Login
+    },
+    {
+      path: '/register',
+      component: Register
     }
   ]
 })
