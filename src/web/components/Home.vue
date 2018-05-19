@@ -8,7 +8,7 @@
             v-container.tournament(fill-height fluid)
               v-layout(column)
                 v-flex(xs12 align-end flexbox)
-                    span.name 2nd Boston Elite Chess Tournament
+                    span.name {{ tournamentName }}
                 v-flex(xs12 align-end flexbox)
                   v-layout(column justify-center)
                     span.detail Date will be announced later
@@ -32,7 +32,7 @@
               div.content
                 span.subtitle Entry Fee:
                 ul.ml-4
-                  li $55 by x/x, $65 onsite
+                  li $55 by mm/dd, $65 onsite
                   li $10 discount for 2300+
                   li GM/IM/FM/WGM/WIM/WFM free
               div.content
@@ -41,7 +41,7 @@
                   li 1st -- $150, 2nd -- $100
                   li Top U2200 -- $80
               v-layout.action(row justify-center)
-                v-btn(small @click.native="register") Register
+                v-btn(small @click.native="register('master')") Register
           v-card.other
             v-layout(column align-start)
               div
@@ -50,7 +50,7 @@
               div.content
                 span.subtitle Entry Fee:
                 ul.ml-4
-                  li $45 by x/x, $55 onsite
+                  li $45 by mm/dd, $55 onsite
                   li $10 discount for 1950+
               div.content
                 span.subtitle Money Prizes:
@@ -58,7 +58,7 @@
                   li 1st -- $150
                   li 2nd -- $100
               v-layout.action.action-mt(row justify-center)
-                v-btn(small @click.native="register") Register
+                v-btn(small @click.native="register('u2000')") Register
           v-card.last
             v-layout(column align-start)
               div
@@ -67,7 +67,7 @@
               div.content
                 span.subtitle Entry Fee:
                 ul.ml-4
-                  li $45 by x/x, $55 onsite
+                  li $45 by mm/dd, $55 onsite
                   li $10 discount for 1550+
               div.content
                 span.subtitle Money Prizes:
@@ -75,7 +75,7 @@
                   li 1st -- $120
                   li 2nd -- $80
               v-layout.action.action-mt(row justify-center)
-                v-btn(small @click.native="register") Register
+                v-btn(small @click.native="register('u1600')") Register
       // div.mt-3.ml-3.mr-1.align-left * February 2018 supplemental rating is used for registration/pairing/prize purposes. Live rating on the registration date can be used for registration as well.
       // div.mt-1.ml-3.mr-1.align-left
         span.subtitle Registration - Online:
@@ -158,10 +158,28 @@ import router from '../router'
 export default {
   name: 'Home',
   data () {
-    return {}
+    return {
+      tournamentName: '2nd Boston Elite Chess Tournament'
+    }
   },
   methods: {
-    register () {
+    register (section) {
+      let info = {
+        name: this.tournamentName,
+        section: '',
+        entryFee: 0
+      }
+      if (section === 'master') {
+        info.section = 'Master'
+        info.entryFee = 55
+      } else if (section === 'u2000') {
+        info.section = 'U2000'
+        info.entryFee = 45
+      } else {
+        info.section = 'U1600'
+        info.entryFee = 45
+      }
+      this.$store.commit('setTournamentSection', info)
       router.push('/register')
     }
   }
