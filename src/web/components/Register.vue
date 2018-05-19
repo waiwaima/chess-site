@@ -28,10 +28,15 @@
             v-checkbox(label="Round 2" v-model="byes" value="2")
             v-checkbox(label="Round 3" v-model="byes" value="3")
         v-text-field(label="Entry Fee" v-model="strEntryFee" disabled)
+        v-layout.mt-2(v-if="inputValidated" row justify-center)
+          paypal(amount="0.01" currency='USD' :client="credentials" env="sandbox")
+        v-layout.mt-2(v-else row justify-center)
+          v-btn(round disabled style="text-transform: none !important;") PayPal Checkout
   v-card
 </template>
 
 <script>
+import Paypal from 'vue-paypal-checkout'
 import { mapState } from 'vuex'
 import router from '../router'
 
@@ -45,7 +50,11 @@ export default {
       email: null,
       phone: null,
       strEntryFee: null,
-      byes: []
+      byes: [],
+      credentials: {
+        sandbox: 'sandbox client id',
+        production: 'production client id'
+      }
     }
   },
   computed: {
@@ -55,12 +64,18 @@ export default {
         this.strEntryFee = '$' + state.tournamentSection.entryFee
         return state.tournamentSection
       }
-    })
+    }),
+    inputValidated () {
+      return (!!this.name && !!this.uscfId && !!this.rating && !!this.email && !!this.phone)
+    }
   },
   methods: {
     toHome () {
       router.push('/home')
     }
+  },
+  components: {
+    Paypal
   }
 }
 </script>
