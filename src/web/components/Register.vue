@@ -10,15 +10,17 @@
   v-layout(justify-start)
     v-flex(xs12 sm10 md8)
       v-card.card-container
-        v-text-field(label="Full Name" hint="Format: Firstname Lastname" v-model="name" required
-          ref="name" :rules="[() => !!name || 'This field is required']")
-        v-text-field(label="USCF ID" v-model="uscfId" required
+        v-text-field(label="First Name" v-model="firstName" required
+          ref="firstName" :rules="[() => !!firstName || 'This field is required']")
+        v-text-field(label="Last Name" v-model="lastName" required
+          ref="lastName" :rules="[() => !!lastName || 'This field is required']")
+        v-text-field(label="USCF ID" :mask="'########'" v-model="uscfId" required
           ref="uscfId" :rules="[() => !!uscfId || 'This field is required']")
         v-text-field(label="Rating (approx.)" v-model="rating" required
           ref="rating" :rules="[() => !!rating || 'This field is required']")
         v-text-field(label="E-mail" v-model="email" required
           ref="email" :rules="[() => !!email || 'This field is required']")
-        v-text-field(label="Phone" v-model="phone" required
+        v-text-field(label="Phone" :mask="'phone'" v-model="phone" required
           ref="phone" :rules="[() => !!phone || 'This field is required']")
         v-text-field(label="Section" v-model="tournamentSection.section" disabled)
         v-layout.mt-1(column justify-start)
@@ -44,7 +46,8 @@ export default {
   name: 'Register',
   data () {
     return {
-      name: null,
+      firstName: null,
+      lastName: null,
       uscfId: null,
       rating: null,
       email: null,
@@ -66,7 +69,7 @@ export default {
       }
     }),
     inputValidated () {
-      return (!!this.name && !!this.uscfId && !!this.rating && !!this.email && !!this.phone)
+      return (!!this.firstName && !!this.lastName && !!this.uscfId && !!this.rating && !!this.email && !!this.phone)
     }
   },
   methods: {
