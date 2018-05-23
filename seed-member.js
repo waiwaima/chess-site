@@ -21,19 +21,8 @@ mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection 
 const Member = require('./src/server/models/member')
 
 let filepath = path.join(__dirname, 'data', 'test.csv')
-console.log(filepath)
-let csvStr = '1,2,3\n4,5,6'
-console.log(csvStr)
 let count = 0
-
-/*
-csv({noheader:true, output: 'csv'})
-.fromString(csvStr)
-.then((csvRow) => {
-  console.log('reading data')
-  console.log(csvRow)
-})
-*/
+let succeeded = true
 
 execute()
 
@@ -43,16 +32,22 @@ function execute () {
       console.log('calling csvtojson')
       csv()
       .fromFile(filepath)
-      .on('csv', (csvRow) => {
-        console.log('reading data...')
-        // console.log(JSON.stringify(jsonObj))
-        console.log(csvRow)
-        count++
-      })
-      .on('done', (error) => {
-        console.log('done')
-        if (error) return callback(error)
-        callback()
+      .subscribe((json) => {
+        return new Promise((resolve, reject) => {
+          console.log('reading data...')
+          if (count < 10) {
+            console.log(JSON.stringify(json))
+            count++
+            resolve({success: true})
+          } else {
+            succeeded = false
+            reject({success: false})
+          }
+        })
+      }, (err) => {
+        callback(err)
+      }, () => {
+        if (succeeded) callback()
       })
     }
   ], (err, data) => {
@@ -65,4 +60,3 @@ function execute () {
     mongoose.connection.close()
   })
 }
-*/
