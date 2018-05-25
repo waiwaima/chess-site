@@ -3,6 +3,7 @@ const async = require('async')
 const mongoose = require('mongoose')
 const path = require('path')
 const csv = require('csvtojson')
+const moment = require('moment')
 
 // Get command line arguments
 const args = process.argv.slice(2)
@@ -20,9 +21,10 @@ mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection 
 
 const Member = require('./src/server/models/member')
 
-let filepath = path.join(__dirname, 'data', 'test.csv')
+let filepath = path.join(__dirname, 'data', 'players.csv')
 let count = 0
 let succeeded = true
+let activePlayers = []
 
 execute()
 
@@ -35,14 +37,16 @@ function execute () {
       .subscribe((json) => {
         return new Promise((resolve, reject) => {
           console.log('reading data...')
-          if (count < 10) {
-            console.log(JSON.stringify(json))
+          console.log(JSON.stringify(json))
+          if (isActivePlayer(json)) {
+            activePlayers.push(json)
             count++
-            resolve({success: true})
           } else {
-            succeeded = false
-            reject({success: false})
+            console.log('an inactive player???')
           }
+          resolve({success: true})
+          // succeeded = false
+          // reject({success: false})
         })
       }, (err) => {
         callback(err)
@@ -56,7 +60,22 @@ function execute () {
       console.log(err)
     } else {
       console.log(`SUCCESS: completed updating ${count} members`)
+      for (let i = 0; i < activePlayers.length; i++) {
+        console.log(JSON.stringify(activePlayers[i]))
+      }
     }
     mongoose.connection.close()
   })
+}
+
+function isActivePlayer (json) {
+  let active = true
+  // inactive member
+  if (json.MEM_NAME === 'INACTIVE ID') return false
+  // life member
+  if (json.EXPIRED === '12/31/99') return true
+  let refDate = moment('1/1/13', 'M/D/YY')
+  let expireDate = moment(json.EXPIRED, 'M/D/YY')
+  active = (expireDate.diff(refDate, 'days', true)) > 0
+  return active
 }
