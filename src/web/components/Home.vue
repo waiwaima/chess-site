@@ -35,7 +35,7 @@
                   li $55 by 6/23/, $60 by 6/30, $65 onsite
                   li GM/IM/WGM free
               div.content
-                span.subtitle Money Prizes:
+                span.subtitle Guaranteed Money Prizes:
                 ul.ml-4
                   li 1st -- $200, 2nd -- $100
                   li Top U2200 -- $100
@@ -51,7 +51,7 @@
                 ul.ml-4
                   li $45 by 6/23, $50 by 6/30, $55 onsite
               div.content
-                span.subtitle Money Prizes:
+                span.subtitle Guaranteed Money Prizes:
                 ul.ml-4
                   li 1st -- $150
                   li 2nd -- $100
@@ -67,7 +67,7 @@
                 ul.ml-4
                   li $45 by 6/23, $50 by 6/30, $55 onsite
               div.content
-                span.subtitle Money Prizes:
+                span.subtitle Guaranteed Money Prizes:
                 ul.ml-4
                   li 1st -- $150
                   li 2nd -- $100
@@ -104,20 +104,25 @@
           li Free parking available at the location for the whole day.
           li Please bring your own chess set and clock.
           li Contact Leonid Kritz (leonidkritz@gmail.com) if you have any questions.
-      // div.mt-3
+      div.mt-3
+        ul.align-left.mt-2.highlight-ml
+          li Onsite registration 9:00am - 9:30am.
+          li Withdraw: by 6/29, $5 process fee for Paypal refund; after that $15 process fee.
+          li All byes need to be declared before the 1st round; last round 0 point bye only.
+          li July 2018 supplemental rating is used for registration/pairing/prize purposes. Live rating on the registration date can be used for registration as well.
+          li Please bring your own chess set and clock.
+          li Contact Yi Wang via
+            span.ml-1(style="color: blue") bostonelitechess@gmail.com
+            span.ml-1 if you have any questions. This tournament is listed on
+            a(href="http://www.masschess.org/Events/Event_Details.aspx?Event_ID=6345" target="_blank")
+              span.ml-1 MACA website
+      div.mt-3
         .highlight Highlights
         ul.align-left.mt-2.highlight-ml
-          li GM Iotov, GM Ivanov and IM Shmelov confirmed to play, and will review games with their opponents when time allows. The confirmed IM/GMs will NOT be paired to play each other, and will not be eligible for money prize.
-          li Free GM game analysis available by
-            a(href="https://translate.google.com/translate?hl=en&sl=de&u=https://de.wikipedia.org/wiki/Leonid_Kritz&prev=search" target="_blank")
-              span.ml-1 GM Leonid Kritz
-            span.ml-1 and
-            a(href="https://en.wikipedia.org/wiki/Nadezhda_Kosintseva" target="_blank")
-              span.ml-1 GM Nadezhda Kosintseva
-            span . GM analysis priority to lower sections.
-          li Very competitive tournament with top players and top scholastic players in Massachusetts.
+          li GM Ivanov and IM Shmelov confirmed to play. The confirmed GM/IMs will NOT be paired to play each other, and will not be eligible for money prize.
+          li Free GM game analysis available.
+          li Top girls prize available, and will be announced before the tournament.
           li Winner of the lower section will be invited to play in the next upper section in the next tournament. No play-up allowed otherwise.
-          li Full-time college students get 50% discount on entry fee.
       div.mt-3
         .highlight Rule Variations
         // div.mt-1.ml-3.mr-1.align-left
