@@ -31,7 +31,14 @@
             v-checkbox(label="Round 3" v-model="byes" value="3")
         v-text-field(label="Entry Fee" v-model="strEntryFee" disabled)
         v-layout.mt-2(v-if="inputValidated" row justify-center)
-          paypal(amount="0.01" currency='USD' :client="credentials" env="sandbox")
+          paypal(:amount="tournamentSection.entryFee"
+            currency='USD'
+            :client="credentials"
+            :items="items"
+            env="sandbox"
+            v-on:payment-authorized="paymentAuthorized"
+            v-on:payment-completed="paymentCompleted"
+            v-on:payment-cancelled="paymentCancelled")
         v-layout.mt-2(v-else row justify-center)
           v-btn(round disabled style="text-transform: none !important;") PayPal Checkout
   v-card
@@ -55,9 +62,10 @@ export default {
       strEntryFee: null,
       byes: [],
       credentials: {
-        sandbox: 'sandbox client id',
+        sandbox: 'AWi18rxt26-hrueMoPZ0tpGEOJnNT4QkiMQst9pYgaQNAfS1FLFxkxQuiaqRBj1vV5PmgHX_jA_c1ncL',
         production: 'production client id'
-      }
+      },
+      items: []
     }
   },
   computed: {
@@ -65,6 +73,14 @@ export default {
       tournamentSection (state) {
         console.log(state.tournamentSection.name)
         this.strEntryFee = '$' + state.tournamentSection.entryFee
+        this.items = []
+        this.items.push({
+          'name': state.tournamentSection.name,
+          'description': state.tournamentSection.section + ' section',
+          'quantity': '1',
+          'price': state.tournamentSection.entryFee,
+          'currency': 'USD'
+        })
         return state.tournamentSection
       }
     }),
@@ -75,6 +91,16 @@ export default {
   methods: {
     toHome () {
       router.push('/home')
+    },
+    paymentAuthorized (data) {
+      console.log('logged in PayPal')
+    },
+    paymentCompleted (data) {
+      console.log('complete payment')
+      console.log(data)
+    },
+    paymentCancelled (data) {
+      console.log('cancel payment')
     }
   },
   components: {

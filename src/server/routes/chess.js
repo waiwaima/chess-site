@@ -3,6 +3,7 @@ const formidable = require('formidable')
 const path = require('path')
 const fs = require('fs')
 const cheerio = require('cheerio')
+const Player = require('../models/Player')
 
 module.exports = function () {
   const router = express.Router()
@@ -208,6 +209,20 @@ module.exports = function () {
     } else {
       res.json(rst)
     }
+  })
+
+  router.get('/players', (req, res) => {
+    Player.find({}, (err, docs) => {
+      if (err) {
+        res.status(500).send({message: `Failed to list tournament players`})
+      } else {
+        res.json(docs)
+      }
+    })
+  })
+
+  router.post('/players', (req, res) => {
+
   })
 
   return router

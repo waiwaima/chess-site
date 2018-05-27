@@ -173,13 +173,13 @@ export default {
       }
       if (section === 'master') {
         info.section = 'Master'
-        info.entryFee = 55
+        info.entryFee = '55'
       } else if (section === 'u2000') {
         info.section = 'U2000'
-        info.entryFee = 45
+        info.entryFee = '45'
       } else {
         info.section = 'U1600'
-        info.entryFee = 45
+        info.entryFee = '45'
       }
       this.$store.commit('setTournamentSection', info)
       router.push('/register')

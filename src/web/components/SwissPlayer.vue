@@ -1,6 +1,6 @@
 <template lang="pug">
-.player
-  // v-layout(column justify-start)
+.swiss-player
+  v-layout(column justify-start)
     v-flex
       v-layout(row justify-start)
         v-icon date_range
@@ -29,11 +29,12 @@
 </template>
 
 <script>
+import axios from 'axios'
 const moment = require('moment')
 moment.locale()
 
 export default {
-  name: 'Player',
+  name: 'SwissPlayer',
   data () {
     return {
       active: 'master',
@@ -165,34 +166,49 @@ export default {
       }
       return rst
     }
+  },
+  methods: {
+    load () {
+      this.items = []
+      axios.get('/players')
+        .then(response => {
+
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  },
+  created () {
+    this.load()
   }
 }
 </script>
 
 <style lang="stylus">
-.player .tabs .tabs__item.tabs__item--active
+.swiss-player .tabs .tabs__item.tabs__item--active
   color: white !important
   font-weight: 600
-.player .tabs .tabs__li
+.swiss-player .tabs .tabs__li
   border-radius: 2px
   width: 100px
   color: white
   background-color: #3497f0
-.player .tabs__li
+.swiss-player .tabs__li
   margin: 2px
   width: auto
-.player .tabs__slider
+.swiss-player .tabs__slider
   height: 3px
-.player #section .tabs__content
+.swiss-player #section .tabs__content
   transition: none
-.player table.table tbody td
+.swiss-player table.table tbody td
   height: 40px
-.player table.table tbody td:first-child, .player table.table thead th:first-child
+.swiss-player table.table tbody td:first-child, .swiss-player table.table thead th:first-child
   padding: 0 0 0 24px
 </style>
 
 <style lang="stylus" scoped>
-.player
+.swiss-player
   width: 100%
   padding: 16px 16px
   background-color: #f7f7f6
@@ -201,6 +217,6 @@ export default {
 .fw-600
   font-weight: 600
 @media screen and (max-device-width: 600px)
-  .player
+  .swiss-player
     padding: 16px 2px
 </style>

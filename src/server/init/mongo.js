@@ -14,7 +14,8 @@ module.exports = function () {
       pass: '',
       server: {
         socketOptions: {keepAlive: 1}
-      }
+      },
+      autoIndex: false
     }
     db = mongoose.connect('mongodb://localhost:27017/chess', options, function afterConnection (err) {
       if (err) {
