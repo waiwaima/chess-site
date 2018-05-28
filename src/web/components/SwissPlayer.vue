@@ -30,6 +30,7 @@
 
 <script>
 import axios from 'axios'
+import { mapState } from 'vuex'
 const moment = require('moment')
 moment.locale()
 
@@ -41,7 +42,8 @@ export default {
       tabs: [
         {text: 'Master', value: 'master'},
         {text: 'U2000', value: 'u2000'},
-        {text: 'U1600', value: 'u1600'}
+        {text: 'U1600', value: 'u1600'},
+        {text: 'U1200', value: 'u1200'}
       ],
       headers: [
         {text: '#', value: 'number', align: 'left', sortable: false},
@@ -141,38 +143,46 @@ export default {
     today () {
       return moment(new Date()).format('MMMM D, YYYY')
     },
-    players () {
-      this.items.sort((a, b) => {
-        let aRating = parseInt(a.rating)
-        let bRating = parseInt(b.rating)
-        return (bRating - aRating)
-      })
-      const rst = {
-        master: [],
-        u2000: [],
-        u1600: []
-      }
-      for (let i = 0; i < this.items.length; i++) {
-        if (this.items[i].rating > 1999) {
-          this.items[i].number = rst.master.length + 1
-          rst.master.push(this.items[i])
-        } else if (this.items[i].rating > 1599) {
-          this.items[i].number = rst.u2000.length + 1
-          rst.u2000.push(this.items[i])
-        } else {
-          this.items[i].number = rst.u1600.length + 1
-          rst.u1600.push(this.items[i])
+    ...mapState({
+      players (state) {
+        let items = state.players
+        items.sort((a, b) => {
+          let aRating = parseInt(a.rating)
+          let bRating = parseInt(b.rating)
+          return (bRating - aRating)
+        })
+        const rst = {
+          master: [],
+          u2000: [],
+          u1600: [],
+          u1200: []
         }
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].rating > 1999) {
+            items[i].number = rst.master.length + 1
+            rst.master.push(items[i])
+          } else if (items[i].rating > 1599) {
+            items[i].number = rst.u2000.length + 1
+            rst.u2000.push(items[i])
+          } else if (items[i].rating > 1199) {
+            items[i].number = rst.u1600.length + 1
+            rst.u1600.push(items[i])
+          } else {
+            items[i].number = rst.u1200.length + 1
+            rst.u1200.push(items[i])
+          }
+        }
+        return rst
       }
-      return rst
-    }
+    })
   },
   methods: {
     load () {
       this.items = []
-      axios.get('/players')
+      axios.get('/api/players')
         .then(response => {
-
+          console.log(response.data)
+          this.$store.commit('setTournamentPlayers', response.data)
         })
         .catch(err => {
           console.log(err)

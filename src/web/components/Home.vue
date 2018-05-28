@@ -24,32 +24,36 @@
                     span.detail Rounds: 10:00am / 1:45pm / 5:15pm
       v-flex(xs12)
         v-layout.section(row wrap)
-          v-card.first
+          v-card
+            v-layout(row align-center)
+              v-layout(column align-start)
+                div.name Master
+                div.subname Open to USCF 2000+
+                div.content
+                  span.subtitle Entry Fee:
+                  ul.ml-4
+                    li $55 by 6/23/
+                    li $60 by 6/30
+                    li $65 onsite
+                    li GM/IM/WGM free
+                div.content
+                  span.subtitle Guaranteed Money Prizes:
+                  ul.ml-4
+                    li 1st -- $200, 2nd -- $100
+                    li Top U2200 -- $100
+                v-layout.action(row justify-center)
+                  v-btn(small @click.native="register('master')") Register
+          v-card.light-background
             v-layout(column align-start)
-              div
-                span.name Master:
-                span.ml-2 Open to USCF 2000+
+              v-layout(row align-center)
+              div.name U2000
+              div.subname Open to USCF 1600 - 1999
               div.content
                 span.subtitle Entry Fee:
                 ul.ml-4
-                  li $55 by 6/23/, $60 by 6/30, $65 onsite
-                  li GM/IM/WGM free
-              div.content
-                span.subtitle Guaranteed Money Prizes:
-                ul.ml-4
-                  li 1st -- $200, 2nd -- $100
-                  li Top U2200 -- $100
-              v-layout.action(row justify-center)
-                v-btn(small @click.native="register('master')") Register
-          v-card.other
-            v-layout(column align-start)
-              div
-                span.name U2000:
-                span.ml-2 Open to USCF 1600 - 1999
-              div.content
-                span.subtitle Entry Fee:
-                ul.ml-4
-                  li $45 by 6/23, $50 by 6/30, $55 onsite
+                  li $45 by 6/23
+                  li $50 by 6/30
+                  li $55 onsite
               div.content
                 span.subtitle Guaranteed Money Prizes:
                 ul.ml-4
@@ -57,15 +61,16 @@
                   li 2nd -- $100
               v-layout.action.action-mt(row justify-center)
                 v-btn(small @click.native="register('u2000')") Register
-          v-card.last
+          v-card
             v-layout(column align-start)
-              div
-                span.name U1600:
-                span.ml-2 Open to USCF 1200 - 1599
+              div.name U1600
+              div.subname Open to USCF 1200 - 1599
               div.content
                 span.subtitle Entry Fee:
                 ul.ml-4
-                  li $45 by 6/23, $50 by 6/30, $55 onsite
+                  li $45 by 6/23
+                  li $50 by 6/30
+                  li $55 onsite
               div.content
                 span.subtitle Guaranteed Money Prizes:
                 ul.ml-4
@@ -73,6 +78,23 @@
                   li 2nd -- $100
               v-layout.action.action-mt(row justify-center)
                 v-btn(small @click.native="register('u1600')") Register
+          v-card.light-background
+            v-layout(column align-start)
+              div.name U1200
+              div.subname Open to USCF 800 - 1199
+              div.content
+                span.subtitle Entry Fee:
+                ul.ml-4
+                  li $45 by 6/23
+                  li 50 by 6/30
+                  li $55 onsite
+              div.content
+                span.subtitle Guaranteed Money Prizes:
+                ul.ml-4
+                  li 1st -- $150
+                  li 2nd -- $100
+              v-layout.action.action-mt(row justify-center)
+                      v-btn(small @click.native="register('u1200')") Register
       // div.mt-3.ml-3.mr-1.align-left * February 2018 supplemental rating is used for registration/pairing/prize purposes. Live rating on the registration date can be used for registration as well.
       // div.mt-1.ml-3.mr-1.align-left
         span.subtitle Registration - Online:
@@ -177,8 +199,11 @@ export default {
       } else if (section === 'u2000') {
         info.section = 'U2000'
         info.entryFee = '45'
-      } else {
+      } else if (section === 'u1600') {
         info.section = 'U1600'
+        info.entryFee = '45'
+      } else {
+        info.section = 'U1200'
         info.entryFee = '45'
       }
       this.$store.commit('setTournamentSection', info)
@@ -207,6 +232,8 @@ export default {
   margin-top: 24px
   padding: 16px 24px
   flex-grow: 1
+.section .card.light-background
+  background: url(/static/bg-card-light.jpg) 0 0 repeat
 .section .first
   margin-right: 16px
 .section .other
@@ -217,6 +244,11 @@ export default {
 .section .name
   font-size: 1.3em
   font-weight: 600
+  text-align: center
+  width: 100%
+.section .subname
+  text-align: center
+  width: 100%
 .section .content
   text-align: left
   margin-top: 8px

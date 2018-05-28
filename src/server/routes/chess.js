@@ -1,9 +1,11 @@
+const async = require('async')
 const express = require('express')
 const formidable = require('formidable')
 const path = require('path')
 const fs = require('fs')
 const cheerio = require('cheerio')
 const Player = require('../models/Player')
+const Member = require('../models/Member')
 
 module.exports = function () {
   const router = express.Router()
@@ -222,7 +224,73 @@ module.exports = function () {
   })
 
   router.post('/players', (req, res) => {
-
+    let existingMember
+    async.series([
+      (callback) => {
+        Member.find({ uscfId: req.body.uscfId },
+          (err, doc) => {
+            if (err) return callback(err)
+            existingMember = doc
+            callback(null, doc)
+          })
+      },
+      (callback) => {
+        if (existingMember) {
+          Member.findByIdAndUpdate(existingMember.id,
+            { $set: {
+              email: req.body.email,
+              phone: req.body.phone
+            }},
+            { new: true},
+            (err, doc) => {
+              if (err) return callback(err)
+              callback(doc)
+            })
+        } else {
+          let member = new Member({
+            uscfId: req.body.uscfId,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            fullName: req.body.lastName.toUpperCase() + ',' + req.body.firstName.toUpperCase(),
+            rating: req.body.rating,
+            state: req.body.state,
+            email: req.body.email,
+            phone: req.body.phone
+          })
+          member.save((err, doc) => {
+            if (err) return callback(err)
+            callback(doc)
+          })
+        }
+      },
+      (callback) => {
+        let player = {
+          uscfId: req.body.uscfId,
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          rating: req.body.rating,
+          state: req.body.state,
+          email: req.body.email,
+          phone: req.body.phone,
+          tournament: req.body.tournament,
+          section: req.body.section,
+          byes: req.body.byes
+        }
+        Player.findOneAndUpdate({ uscfId: req.body.uscfId },
+          { $set: player },
+          { new: true, upsert: true },
+          (err, doc) => {
+            if (err) return callback(err)
+            callback(doc)
+          })
+      }
+    ], (err, docs) => {
+      if (err) {
+        res.status(500).send({message: `Failed to add player ${ req.body.firstName } ${ req.body.lastName }`})
+      } else {
+        res.json(docs[2])
+      }
+    })
   })
 
   return router

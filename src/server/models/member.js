@@ -6,9 +6,9 @@ const schema = new Schema({
   firstName: String,
   lastName: String,
   fullName: String,
+  rating: Number,
   expirationDate: String,
   state: String,
-  rating: Number,
   email: String,
   phone: Number
 })

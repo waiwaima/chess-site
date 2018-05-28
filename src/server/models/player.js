@@ -2,13 +2,15 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 const schema = new Schema({
-  uscfId: Number,
+  uscfId: String,
   firstName: String,
   lastName: String,
-  state: String,
   rating: Number,
+  state: String,
   email: String,
   phone: Number,
+  tournament: String,
+  section: String,
   byes: [Number]
 })
 schema.set('toJSON', {
@@ -16,4 +18,4 @@ schema.set('toJSON', {
   versionKey: false
 })
 
-module.exports = mongoose.model('Member', schema)
+module.exports = mongoose.model('Player', schema)

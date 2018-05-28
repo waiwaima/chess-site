@@ -10,7 +10,8 @@ export default new Vuex.Store({
       name: '',
       section: '',
       entryFee: 0
-    }
+    },
+    players: []
   },
   mutations: {
     setCurrentUser (state, user) {
@@ -20,6 +21,14 @@ export default new Vuex.Store({
       state.tournamentSection.name = tournament.name
       state.tournamentSection.section = tournament.section
       state.tournamentSection.entryFee = tournament.entryFee
+    },
+    setTournamentPlayers (state, players) {
+      state.players = players
+    },
+    addTournamentPlayers (state, player) {
+      if (state.players.filter(e => e.uscfId === player.uscfId).length === 0) {
+        state.players.push(player)
+      }
     }
   }
 })
