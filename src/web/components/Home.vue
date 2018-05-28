@@ -20,8 +20,8 @@
                     // span.detail 1320 Centre St, Newton, MA
                 v-flex(xs12 align-end flexbox)
                   v-layout(column justify-center)
-                    span.detail 3RR, G/80 d5
-                    span.detail Rounds: 10:00am / 1:45pm / 5:15pm
+                    span.detail 3SS, G/80 d5
+                    span.detail Rounds: 10:00am, 1:45pm, 5:15pm
       v-flex(xs12)
         v-layout.section(row wrap)
           v-card
@@ -133,7 +133,9 @@
           li All byes need to be declared before the 1st round; last round 0 point bye only.
           li July 2018 supplemental rating is used for registration/pairing/prize purposes. Live rating on the registration date can be used for registration as well.
           li Please bring your own chess set and clock.
-          li Contact Yi Wang via
+          li Contact
+            span.ml-1.text-highlight Yi Wang
+            span via
             span.ml-1(style="color: blue") bostonelitechess@gmail.com
             span.ml-1 if you have any questions. This tournament is listed on
             a(href="http://www.masschess.org/Events/Event_Details.aspx?Event_ID=6345" target="_blank")

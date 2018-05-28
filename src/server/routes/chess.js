@@ -224,10 +224,11 @@ module.exports = function () {
   })
 
   router.post('/players', (req, res) => {
+    console.log(JSON.stringify(req.body))
     let existingMember
     async.series([
       (callback) => {
-        Member.find({ uscfId: req.body.uscfId },
+        Member.findOne({ uscfId: req.body.uscfId },
           (err, doc) => {
             if (err) return callback(err)
             existingMember = doc
@@ -236,7 +237,7 @@ module.exports = function () {
       },
       (callback) => {
         if (existingMember) {
-          Member.findByIdAndUpdate(existingMember.id,
+          Member.findByIdAndUpdate(existingMember._id,
             { $set: {
               email: req.body.email,
               phone: req.body.phone
@@ -244,7 +245,7 @@ module.exports = function () {
             { new: true},
             (err, doc) => {
               if (err) return callback(err)
-              callback(doc)
+              callback(null, doc)
             })
         } else {
           let member = new Member({
@@ -259,7 +260,7 @@ module.exports = function () {
           })
           member.save((err, doc) => {
             if (err) return callback(err)
-            callback(doc)
+            callback(null, doc)
           })
         }
       },
@@ -269,7 +270,7 @@ module.exports = function () {
           firstName: req.body.firstName,
           lastName: req.body.lastName,
           rating: req.body.rating,
-          state: req.body.state,
+          state: existingMember ? existingMember.state : '',
           email: req.body.email,
           phone: req.body.phone,
           tournament: req.body.tournament,
@@ -281,11 +282,12 @@ module.exports = function () {
           { new: true, upsert: true },
           (err, doc) => {
             if (err) return callback(err)
-            callback(doc)
+            callback(null, doc)
           })
       }
     ], (err, docs) => {
       if (err) {
+        console.log(err)
         res.status(500).send({message: `Failed to add player ${ req.body.firstName } ${ req.body.lastName }`})
       } else {
         res.json(docs[2])

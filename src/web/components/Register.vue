@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import Paypal from 'vue-paypal-checkout'
 import { mapState } from 'vuex'
 import router from '../router'
@@ -98,6 +99,34 @@ export default {
     paymentCompleted (data) {
       console.log('complete payment')
       console.log(data)
+      console.log(this.byes)
+      axios.post('/api/players', {
+        firstName: this.firstName,
+        lastName: this.lastName,
+        uscfId: this.uscfId,
+        rating: this.rating,
+        email: this.email,
+        phone: this.phone,
+        tournament: this.tournamentSection.name,
+        section: this.tournamentSection.section,
+        byes: this.byes
+      })
+        .then(response => {
+          console.log(response.data)
+          let data = response.data
+          let player = {
+            name: data.firstName + ' ' + data.lastName,
+            rating: data.rating,
+            id: data.uscfId,
+            state: data.state,
+            byes: (data.byes && data.byes.length > 0) ? 'Round ' + data.byes.join(',') : ''
+          }
+          this.$store.commit('addTournamentPlayer', player)
+          router.push('/players')
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
     paymentCancelled (data) {
       console.log('cancel payment')

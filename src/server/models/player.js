@@ -11,7 +11,7 @@ const schema = new Schema({
   phone: Number,
   tournament: String,
   section: String,
-  byes: [Number]
+  byes: [String]
 })
 schema.set('toJSON', {
   virtuals: true,

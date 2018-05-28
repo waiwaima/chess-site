@@ -145,8 +145,8 @@ export default {
     },
     ...mapState({
       players (state) {
-        let items = state.players
-        items.sort((a, b) => {
+        this.items = state.players
+        this.items.sort((a, b) => {
           let aRating = parseInt(a.rating)
           let bRating = parseInt(b.rating)
           return (bRating - aRating)
@@ -157,19 +157,19 @@ export default {
           u1600: [],
           u1200: []
         }
-        for (let i = 0; i < items.length; i++) {
-          if (items[i].rating > 1999) {
-            items[i].number = rst.master.length + 1
-            rst.master.push(items[i])
-          } else if (items[i].rating > 1599) {
-            items[i].number = rst.u2000.length + 1
-            rst.u2000.push(items[i])
-          } else if (items[i].rating > 1199) {
-            items[i].number = rst.u1600.length + 1
-            rst.u1600.push(items[i])
+        for (let i = 0; i < this.items.length; i++) {
+          if (this.items[i].rating > 1999) {
+            this.items[i].number = rst.master.length + 1
+            rst.master.push(this.items[i])
+          } else if (this.items[i].rating > 1599) {
+            this.items[i].number = rst.u2000.length + 1
+            rst.u2000.push(this.items[i])
+          } else if (this.items[i].rating > 1199) {
+            this.items[i].number = rst.u1600.length + 1
+            rst.u1600.push(this.items[i])
           } else {
-            items[i].number = rst.u1200.length + 1
-            rst.u1200.push(items[i])
+            this.items[i].number = rst.u1200.length + 1
+            rst.u1200.push(this.items[i])
           }
         }
         return rst
@@ -178,11 +178,21 @@ export default {
   },
   methods: {
     load () {
-      this.items = []
       axios.get('/api/players')
         .then(response => {
           console.log(response.data)
-          this.$store.commit('setTournamentPlayers', response.data)
+          let data = response.data
+          let players = []
+          for (let i = 0; i < data.length; i++) {
+            players.push({
+              name: data[i].firstName + ' ' + data[i].lastName,
+              rating: data[i].rating,
+              id: data[i].uscfId,
+              state: data[i].state,
+              byes: (data[i].byes && data[i].byes.length > 0) ? 'Round ' + data[i].byes.join(',') : ''
+            })
+          }
+          this.$store.commit('setTournamentPlayers', players)
         })
         .catch(err => {
           console.log(err)

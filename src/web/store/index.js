@@ -25,8 +25,8 @@ export default new Vuex.Store({
     setTournamentPlayers (state, players) {
       state.players = players
     },
-    addTournamentPlayers (state, player) {
-      if (state.players.filter(e => e.uscfId === player.uscfId).length === 0) {
+    addTournamentPlayer (state, player) {
+      if (state.players.filter(e => e.id === player.id).length === 0) {
         state.players.push(player)
       }
     }
