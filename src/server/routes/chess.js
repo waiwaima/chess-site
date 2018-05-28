@@ -4,8 +4,8 @@ const formidable = require('formidable')
 const path = require('path')
 const fs = require('fs')
 const cheerio = require('cheerio')
-const Player = require('../models/Player')
-const Member = require('../models/Member')
+const Player = require('../models/player')
+const Member = require('../models/member')
 
 module.exports = function () {
   const router = express.Router()
