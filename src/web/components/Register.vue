@@ -25,7 +25,7 @@
         v-text-field(label="Section" v-model="tournamentSection.section" disabled)
         v-layout.mt-1(column justify-start)
           div Bye Requests
-          div.pl-5
+          div.pl-5.bye
             v-checkbox(label="Round 1" v-model="byes" value="1")
             v-checkbox(label="Round 2" v-model="byes" value="2")
             v-checkbox(label="Round 3" v-model="byes" value="3")
@@ -108,8 +108,9 @@ export default {
         email: this.email,
         phone: this.phone,
         tournament: this.tournamentSection.name,
-        section: this.tournamentSection.section,
-        byes: this.byes
+        section: this.tournamentSection.section.toLowerCase(),
+        byes: this.byes,
+        payment: this.tournamentSection.entryFee
       })
         .then(response => {
           console.log(response.data)
@@ -139,7 +140,7 @@ export default {
 </script>
 
 <style lang="stylus">
-.register .input-group__details
+.register .bye .input-group__details
   min-height: 2px
 </style>
 

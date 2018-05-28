@@ -158,13 +158,13 @@ export default {
           u1200: []
         }
         for (let i = 0; i < this.items.length; i++) {
-          if (this.items[i].rating > 1999) {
+          if (this.items[i].section === 'master' || this.items[i].rating > 1999) {
             this.items[i].number = rst.master.length + 1
             rst.master.push(this.items[i])
-          } else if (this.items[i].rating > 1599) {
+          } else if (this.items[i].section === 'u2000' || this.items[i].rating > 1599) {
             this.items[i].number = rst.u2000.length + 1
             rst.u2000.push(this.items[i])
-          } else if (this.items[i].rating > 1199) {
+          } else if (this.items[i].section === 'u1600' || this.items[i].rating > 1199) {
             this.items[i].number = rst.u1600.length + 1
             rst.u1600.push(this.items[i])
           } else {

@@ -4,6 +4,7 @@ const formidable = require('formidable')
 const path = require('path')
 const fs = require('fs')
 const cheerio = require('cheerio')
+const nodemailer = require('nodemailer')
 const Player = require('../models/player')
 const Member = require('../models/member')
 
@@ -224,6 +225,7 @@ module.exports = function () {
   })
 
   router.post('/players', (req, res) => {
+    console.log('Register a player:')
     console.log(JSON.stringify(req.body))
     let existingMember
     async.series([
@@ -284,6 +286,39 @@ module.exports = function () {
             if (err) return callback(err)
             callback(null, doc)
           })
+      },
+      (callback) => {
+        let transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: 'izhao.xianfeng@gmail.com',
+            pass: 'xfzh4021'
+          }
+        })
+        let byeRequests = (req.body.byes && req.body.byes.length > 0) ? 'Round ' + req.body.byes.join(',') : 'None'
+        let section = req.body.section.charAt(0).toUpperCase() + req.body.section.slice(1)
+        let mailOptions = {
+          from: 'izhao.xianfeng@gmail.com',
+          to: req.body.email,
+          subject: '2nd BECA Tournament Registration',
+          text: `Thank you for registering for ${ req.body.tournament }. \
+          \n\nPlayer: ${ req.body.firstName } ${ req.body.lastName } \
+          \nSection: ${ section } \
+          \nBye Requests: ${ byeRequests } \
+          \nTotal Payment: $${ req.body.payment } \
+          \n\nIf you have any questions or need to withdraw, please email bostonelitechess@gmail.com. \
+          \n\nBest wishes, \
+          \nBoston Elite Chess Academy`
+        }
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.log(`Failed to email ${ req.body.email }`)
+            console.log(error)
+          } else {
+            console.log('Email sent: ' + info.response)
+          }
+          callback()
+        })
       }
     ], (err, docs) => {
       if (err) {

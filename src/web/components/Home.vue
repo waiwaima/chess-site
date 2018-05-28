@@ -20,8 +20,8 @@
                     // span.detail 1320 Centre St, Newton, MA
                 v-flex(xs12 align-end flexbox)
                   v-layout(column justify-center)
-                    span.detail 3SS, G/80 d5
-                    span.detail Rounds: 10:00am, 1:45pm, 5:15pm
+                    span.detail 3SS, G/90 d5
+                    span.detail Rounds: 10:00am, 1:45pm, 5:30pm
       v-flex(xs12)
         v-layout.section(row wrap)
           v-card
