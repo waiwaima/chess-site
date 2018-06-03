@@ -291,14 +291,14 @@ module.exports = function () {
         let transporter = nodemailer.createTransport({
           service: 'gmail',
           auth: {
-            user: 'izhao.xianfeng@gmail.com',
-            pass: 'xfzh4021'
+            user: 'bostonelitechess@gmail.com',
+            pass: 'xxxx'
           }
         })
         let byeRequests = (req.body.byes && req.body.byes.length > 0) ? 'Round ' + req.body.byes.join(',') : 'None'
         let section = req.body.section.charAt(0).toUpperCase() + req.body.section.slice(1)
         let mailOptions = {
-          from: 'izhao.xianfeng@gmail.com',
+          from: 'bostonelitechess@gmail.com',
           to: req.body.email,
           subject: '2nd BECA Tournament Registration',
           text: `Thank you for registering for ${ req.body.tournament }. \

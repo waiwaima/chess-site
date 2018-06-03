@@ -89,10 +89,10 @@
                   li 50 by 6/30
                   li $55 onsite
               div.content
-                span.subtitle Guaranteed Money Prizes:
+                span.subtitle Prizes:
                 ul.ml-4
-                  li 1st -- $150
-                  li 2nd -- $100
+                  li 40% entry fee
+                  li Trophies or money prizes
               v-layout.action.action-mt(row justify-center)
                       v-btn(small @click.native="register('u1200')") Register
       // div.mt-3.ml-3.mr-1.align-left * February 2018 supplemental rating is used for registration/pairing/prize purposes. Live rating on the registration date can be used for registration as well.
@@ -200,7 +200,7 @@ export default {
         info.entryFee = '55'
       } else if (section === 'u2000') {
         info.section = 'U2000'
-        info.entryFee = '45'
+        info.entryFee = '0.01'
       } else if (section === 'u1600') {
         info.section = 'U1600'
         info.entryFee = '45'

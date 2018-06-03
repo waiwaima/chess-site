@@ -30,8 +30,17 @@
             v-checkbox(label="Round 2" v-model="byes" value="2")
             v-checkbox(label="Round 3" v-model="byes" value="3")
         v-text-field(label="Entry Fee" v-model="strEntryFee" disabled)
-        v-layout.mt-2(row justify-center)
-          v-btn(round style="text-transform: none !important;" :disabled="!inputValidated" @click.native="gotoPaypal") PayPal Checkout
+        v-layout.mt-2(v-if="inputValidated" row justify-center)
+          paypal(:amount="tournamentSection.entryFee"
+            currency='USD'
+            :client="credentials"
+            :items="items"
+            env="sandbox"
+            v-on:payment-authorized="paymentAuthorized"
+            v-on:payment-completed="paymentCompleted"
+            v-on:payment-cancelled="paymentCancelled")
+        v-layout.mt-2(v-else row justify-center)
+          v-btn(round disabled style="text-transform: none !important;") PayPal Checkout
   v-card
 </template>
 
@@ -53,6 +62,11 @@ export default {
       phone: null,
       strEntryFee: null,
       byes: [],
+      credentials: {
+        sandbox: 'AXNafu-VjtJs09w_Pi1tXF_CPHdk2pzOiQloTnKNtDGSapeXzbavWHiJteAjQOUpRehwSNyRI8QiC50a',
+        // sandbox: 'AXRMJY8iGUQ_0fe5Fv0wlu_CsuGI15m-3h8fxZX5M5J-_EoN44YEahBpo-HBCop_0q0eHaiqVrO01__l',
+        production: 'production client id'
+      },
       items: []
     }
   },
@@ -80,31 +94,8 @@ export default {
     toHome () {
       router.push('/home')
     },
-    gotoPaypal () {
-      let business = 'yongzhi_chen-facilitator@yahoo.com'
-      // let business = 'bostonelitechess@gmail.com'
-      let params = []
-      params.push('cmd=_cart')
-      params.push('business=' + business)
-      params.push('lc=US')
-      params.push('item_name=' + this.tournamentSection.name + ' - ' + this.tournamentSection.section)
-      params.push('item_number=0701')
-      params.push('on0=' + this.uscfId)
-      params.push('os0=' + this.firstName + ' ' + this.lastName)
-      params.push('amount=' + this.tournamentSection.entryFee)
-      params.push('currency_code=USD')
-      params.push('button_subtype=products')
-      params.push('add=1')
-      params.push('bn=PP-ShopCartBF:btn_cart_LG.gif:NonHosted')
-      params.push('no_shipping=1')
-      params.push('rm=1')
-      params.push('return=http://www.bostonelitechess.org/')
-      params.push('cancel_return=http://www.bostonelitechess.org')
-      let paramStr = params.join('&')
-      // let url = 'https://www.paypal.com/cgi-bin/webscr?' + encodeURI(paramStr)
-      let url = 'https://www.sandbox.paypal.com/cgi-bin/webscr?' + encodeURI(paramStr)
-      console.log(url)
-      window.open(url, '_self')
+    paymentAuthorized (data) {
+      console.log('logged in PayPal')
     },
     paymentCompleted (data) {
       console.log('complete payment')
@@ -138,6 +129,9 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+    paymentCancelled (data) {
+      console.log('cancel payment')
     }
   },
   components: {
