@@ -5,8 +5,10 @@ const path = require('path')
 const fs = require('fs')
 const cheerio = require('cheerio')
 const nodemailer = require('nodemailer')
+const moment = require('moment')
 const Player = require('../models/player')
 const Member = require('../models/member')
+const Registration = require('../models/registration')
 
 module.exports = function () {
   const router = express.Router()
@@ -324,6 +326,78 @@ module.exports = function () {
       if (err) {
         console.log(err)
         res.status(500).send({message: `Failed to add player ${ req.body.firstName } ${ req.body.lastName }`})
+      } else {
+        res.json(docs[2])
+      }
+    })
+  })
+
+  router.post('/registrations', (req, res) => {
+    console.log('Register a player:')
+    console.log(JSON.stringify(req.body))
+    let existingMember
+    async.series([
+      (callback) => {
+        Member.findOne({ uscfId: req.body.uscfId },
+          (err, doc) => {
+            if (err) return callback(err)
+            existingMember = doc
+            callback(null, doc)
+          })
+      },
+      (callback) => {
+        if (existingMember) {
+          Member.findByIdAndUpdate(existingMember._id,
+            { $set: {
+              email: req.body.email,
+              phone: req.body.phone
+            }},
+            { new: true},
+            (err, doc) => {
+              if (err) return callback(err)
+              callback(null, doc)
+            })
+        } else if (req.body.force) {
+          // continue to this player to registration table
+          callback(null, { uscfIdd: req.body.uscfId })
+        } else {
+          callback({
+            code: "USCFID_NOT_EXISTED",
+            message: `This USCF ID ${ req.body.uscfId } does not exist. Do you want to continue?`
+          })
+        }
+      },
+      (callback) => {
+        let registation = new Registration({
+          uscfId: req.body.uscfId,
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          rating: req.body.rating,
+          state: existingMember ? existingMember.state : '',
+          email: req.body.email,
+          phone: req.body.phone,
+          tournament: req.body.tournament,
+          section: req.body.section,
+          byes: req.body.byes,
+          timestamp: moment.format()
+        })
+        registation.save((err, doc) => {
+          if (err) return callback(err)
+          // start gmail service to check payment notifiation from PayPal
+          callback(null, doc)
+        })
+      }
+    ], (err, docs) => {
+      if (err) {
+        console.log(err)
+        if (err.code === 'USCFID_NOT_EXISTED') {
+          return res.status(500).send(err)
+        } else {
+          res.status(500).send({
+            code: `FAILED`,
+            message: `Failed to add player ${ req.body.firstName } ${ req.body.lastName }`
+          })
+        }
       } else {
         res.json(docs[2])
       }
