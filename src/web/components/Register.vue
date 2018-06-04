@@ -31,7 +31,17 @@
             v-checkbox(label="Round 3" v-model="byes" value="3")
         v-text-field(label="Entry Fee" v-model="strEntryFee" disabled)
         v-layout.mt-2(row justify-center)
-          v-btn(round style="text-transform: none !important;" :disabled="!inputValidated" @click.native="gotoPaypal") PayPal Checkout
+          v-btn(round :disabled="!inputValidated" @click.native="gotoPaypal") Submit
+          v-dialog(v-model="progressDialog" max-width="290")
+            v-card
+              v-layout(justify-center style="padding: 24px 24px")
+                v-progress-circular(indeterminate v-bind:size="50" color="green")
+          v-dialog(v-model="messageDialog", persistent max-width="290")
+            v-card
+              v-card-text {{ message }}
+              v-card-actions
+                v-layout(justify-center)
+                  v-btn(color="blue darken-1" flat @click.native="messageDialog = false") Close
   v-card
 </template>
 
@@ -53,7 +63,10 @@ export default {
       phone: null,
       strEntryFee: null,
       byes: [],
-      items: []
+      items: [],
+      progressDialog: false,
+      messageDialog: false,
+      message: ''
     }
   },
   computed: {
@@ -81,30 +94,54 @@ export default {
       router.push('/home')
     },
     gotoPaypal () {
-      let business = 'yongzhi_chen-facilitator@yahoo.com'
-      // let business = 'bostonelitechess@gmail.com'
-      let params = []
-      params.push('cmd=_cart')
-      params.push('business=' + business)
-      params.push('lc=US')
-      params.push('item_name=' + this.tournamentSection.name + ' - ' + this.tournamentSection.section)
-      params.push('item_number=0701')
-      params.push('on0=' + this.uscfId)
-      params.push('os0=' + this.firstName + ' ' + this.lastName)
-      params.push('amount=' + this.tournamentSection.entryFee)
-      params.push('currency_code=USD')
-      params.push('button_subtype=products')
-      params.push('add=1')
-      params.push('bn=PP-ShopCartBF:btn_cart_LG.gif:NonHosted')
-      params.push('no_shipping=1')
-      params.push('rm=1')
-      params.push('return=http://www.bostonelitechess.org/')
-      params.push('cancel_return=http://www.bostonelitechess.org')
-      let paramStr = params.join('&')
-      // let url = 'https://www.paypal.com/cgi-bin/webscr?' + encodeURI(paramStr)
-      let url = 'https://www.sandbox.paypal.com/cgi-bin/webscr?' + encodeURI(paramStr)
-      console.log(url)
-      window.open(url, '_self')
+      this.progressDialog = true
+      axios.post('/api/registrations', {
+        firstName: this.firstName,
+        lastName: this.lastName,
+        uscfId: this.uscfId,
+        rating: this.rating,
+        email: this.email,
+        phone: this.phone,
+        tournament: this.tournamentSection.name,
+        section: this.tournamentSection.section.toLowerCase(),
+        byes: this.byes,
+        payment: this.tournamentSection.entryFee
+      })
+        .then(response => {
+          // let business = 'yongzhi_chen-facilitator@yahoo.com'
+          let business = 'bostonelitechess@gmail.com'
+          let params = []
+          params.push('cmd=_cart')
+          params.push('business=' + business)
+          params.push('lc=US')
+          params.push('item_name=' + this.tournamentSection.name + ' - ' + this.tournamentSection.section)
+          params.push('item_number=0701')
+          params.push('on0=' + this.uscfId)
+          params.push('os0=' + this.firstName + ' ' + this.lastName)
+          params.push('amount=' + this.tournamentSection.entryFee)
+          params.push('currency_code=USD')
+          params.push('button_subtype=products')
+          params.push('add=1')
+          params.push('bn=PP-ShopCartBF:btn_cart_LG.gif:NonHosted')
+          params.push('no_shipping=1')
+          params.push('rm=1')
+          params.push('return=http://www.bostonelitechess.org/')
+          params.push('cancel_return=http://www.bostonelitechess.org')
+          let paramStr = params.join('&')
+          let url = 'https://www.paypal.com/cgi-bin/webscr?' + encodeURI(paramStr)
+          // let url = 'https://www.sandbox.paypal.com/cgi-bin/webscr?' + encodeURI(paramStr)
+          console.log(url)
+          this.progressDialog = false
+          window.open(url, '_self')
+        })
+        .catch(err => {
+          console.log(err)
+          if (err.response.data.code === 'USCFID_NOT_EXISTED') {
+            this.progressDialog = false
+            this.message = err.response.data.message
+            this.messageDialog = true
+          }
+        })
     },
     paymentCompleted (data) {
       console.log('complete payment')

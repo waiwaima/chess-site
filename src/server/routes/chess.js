@@ -9,6 +9,7 @@ const moment = require('moment')
 const Player = require('../models/player')
 const Member = require('../models/member')
 const Registration = require('../models/registration')
+const gmailService = require('../service/gmail')
 
 module.exports = function () {
   const router = express.Router()
@@ -359,16 +360,16 @@ module.exports = function () {
             })
         } else if (req.body.force) {
           // continue to this player to registration table
-          callback(null, { uscfIdd: req.body.uscfId })
+          callback(null, { uscfId: req.body.uscfId })
         } else {
           callback({
             code: "USCFID_NOT_EXISTED",
-            message: `This USCF ID ${ req.body.uscfId } does not exist. Do you want to continue?`
+            message: `The USCF ID ${ req.body.uscfId } does not exist.`
           })
         }
       },
       (callback) => {
-        let registation = new Registration({
+        let registration = {
           uscfId: req.body.uscfId,
           firstName: req.body.firstName,
           lastName: req.body.lastName,
@@ -379,13 +380,18 @@ module.exports = function () {
           tournament: req.body.tournament,
           section: req.body.section,
           byes: req.body.byes,
-          timestamp: moment.format()
-        })
-        registation.save((err, doc) => {
-          if (err) return callback(err)
-          // start gmail service to check payment notifiation from PayPal
-          callback(null, doc)
-        })
+          payment: req.body.payment,
+          timestamp: moment().format()
+        }
+        Registration.findOneAndUpdate({ uscfId: req.body.uscfId },
+          { $set: registration },
+          { new: true, upsert: true },
+          (err, doc) => {
+            if (err) return callback(err)
+            // start gmail service to check payment notifiation from PayPal
+            gmailService.checkPayment(req.body.uscfId)
+            callback(null, doc)
+          })
       }
     ], (err, docs) => {
       if (err) {

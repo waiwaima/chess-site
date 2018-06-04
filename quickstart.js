@@ -1,14 +1,17 @@
+const async = require('async')
 const fs = require('fs')
+const path = require('path')
 const readline = require('readline')
 const {google} = require('googleapis')
 const cheerio = require('cheerio')
 
 // If modifying these scopes, delete credentials.json.
 const SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
-const TOKEN_PATH = 'credentials.json'
+const TOKEN_PATH = path.join(__dirname, 'data', 'credentials.json')
+const SECRET_PATH = path.join(__dirname, 'data', 'client_secret.json')
 
 // Load client secrets from a local file.
-fs.readFile('client_secret.json', (err, content) => {
+fs.readFile(SECRET_PATH, (err, content) => {
   if (err) return console.log('Error loading client secret file:', err)
   // Authorize a client with credentials, then call the Google Sheets API.
   // authorize(JSON.parse(content), listLabels)
@@ -132,51 +135,68 @@ function getRecentEmail(auth) {
 
 function parsePlayerId(auth) {
   const gmail = google.gmail({version: 'v1', auth})
-  // Only get the recent email - 'maxResults' parameter
-  gmail.users.messages.list({auth: auth, userId: 'me', maxResults: 1,}, function(err, response) {
+  let messageIds = []
+  async.series([
+    (callback) => {
+      gmail.users.messages.list({auth: auth, userId: 'me', maxResults: 10}, (err, response) => {
+        if (err) return callback(err)
+        // Get the message id which we will need to retreive tha actual message next.
+        console.log(response.data.messages.length)
+        for (let i = 0; i < response.data.messages.length; i++) {
+          messageIds.push(response.data.messages[i]['id'])
+        }
+        callback()
+      })
+    },
+    (callback) => {
+      async.forEach(messageIds, (messageId, cb1) => {
+        async.series([
+          (cb2) => {
+            // Retreive the actual message using the message id
+            gmail.users.messages.get({auth: auth, userId: 'me', 'id': messageId}, (err, response) => {
+              if (err) return cb2(err)
+              let fromPaypal = false
+              for (let i = 0; i < response.data.payload.headers.length; i++) {
+                if (response.data.payload.headers[i].name === 'Subject') {
+                  console.log(response.data.payload.headers[i].name + ": " + response.data.payload.headers[i].value)
+                }
+                if (response.data.payload.headers[i].name === 'Subject'
+                    && response.data.payload.headers[i].value === 'Notification of payment received') {
+                  console.log(response.data.payload.headers[i].name + ": " + response.data.payload.headers[i].value)
+                  fromPaypal = true
+                  break
+                }
+              }
+
+              if (!fromPaypal) return cb2()
+              if (response.data.payload.body.size === 0) return cb2()
+
+              let raw = response.data.payload.body.data
+              let buff = new Buffer(raw, 'base64')
+              let text = buff.toString()
+              // console.log(text)
+              const $ = cheerio.load(text)
+              let elem = $('span:contains("0701")').eq(-1)
+              let player = $(elem).next().text()
+              let uscfId = player.split(':')[0]
+              console.log(uscfId)
+              cb2(null, uscfId)
+            })
+          }
+        ], (err, rst2) => {
+          if (err) return cb1(err)
+          cb1()
+        })
+      }, (err, rst1) => {
+        if (err) return callback(err)
+        callback()
+      })
+    }
+  ], (err, data) => {
     if (err) {
       console.log('The API returned an error: ' + err)
-      return
+    } else {
+      // console.log(data[1])
     }
-
-    // Get the message id which we will need to retreive tha actual message next.
-    var message_id = response.data.messages[0]['id']
-
-    // Retreive the actual message using the message id
-    gmail.users.messages.get({auth: auth, userId: 'me', 'id': message_id}, function(err, response) {
-      if (err) {
-        console.log('The API returned an error: ' + err)
-        return
-      }
-
-      // console.log(response['data'])
-      let fromPaypal = false
-      for (let i = 0; i < response.data.payload.headers.length; i++) {
-        if (response.data.payload.headers[i].name === 'Subject'
-            && response.data.payload.headers[i].value === 'Notification of payment received') {
-          console.log(response.data.payload.headers[i].name + ": " + response.data.payload.headers[i].value)
-          fromPaypal = true
-          break
-        }
-      }
-
-      if (!fromPaypal) {
-        return
-      }
-
-      if (response.data.payload.body.size === 0) {
-        return
-      }
-
-      let raw = response.data.payload.body.data
-      let buff = new Buffer(raw, 'base64')
-      let text = buff.toString()
-      // console.log(text)
-      const $ = cheerio.load(text)
-      let elem = $('span:contains("0701")').eq(-1)
-      console.log($(elem).html())
-      let player = $(elem).next().text()
-      console.log(player.split(':')[0])
-    })
   })
 }

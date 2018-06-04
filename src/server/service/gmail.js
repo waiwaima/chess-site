@@ -1,21 +1,31 @@
+const async = require('async')
 const fs = require('fs')
 const path = require('path')
 const readline = require('readline')
 const {google} = require('googleapis')
 const cheerio = require('cheerio')
+const nodemailer = require('nodemailer')
+const Player = require('../models/player')
+const Registration = require('../models/registration')
 
 // If modifying these scopes, delete credentials.json.
 const SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 const TOKEN_PATH = path.join(__dirname, '..', '..', '..', 'data', 'credentials.json')
-const SECRET_PATH = path.join(__dirname, '..', '..', '..', 'data', 'credentials.json')
+const SECRET_PATH = path.join(__dirname, '..', '..', '..', 'data', 'client_secret.json')
 
-const TOTAL_QUERY = 180
+const TOTAL_QUERY = 240
 let queryCount = 0
 let monitor = null
 let pendingRegistrations = []
 let readMessageIds = []
 
 function fetchPaymentEmail() {
+  queryCount++
+  if (queryCount > TOTAL_QUERY) {
+    clearInterval(monitor)
+    monitor = null
+    return
+  }
   // Load client secrets from a local file.
   fs.readFile(SECRET_PATH, (err, content) => {
     if (err) return console.log('Error loading client secret file:', err)
@@ -142,52 +152,143 @@ function getRecentEmail(auth) {
 
 function parsePlayerId(auth) {
   const gmail = google.gmail({version: 'v1', auth})
-  // Only get the recent email - 'maxResults' parameter
-  gmail.users.messages.list({auth: auth, userId: 'me', maxResults: 1,}, function(err, response) {
+  let messageIds = []
+  async.series([
+    (callback) => {
+      gmail.users.messages.list({auth: auth, userId: 'me', maxResults: 10}, (err, response) => {
+        if (err) return callback(err)
+        // Get the message id which we will need to retreive tha actual message next.
+        for (let i = 0; i < response.data.messages.length; i++) {
+          let id = response.data.messages[i]['id']
+          if (readMessageIds.indexOf(id) === -1) {
+            messageIds.push(id)
+          }
+        }
+        callback()
+      })
+    },
+    (callback) => {
+      async.forEach(messageIds, (messageId, cb1) => {
+        let uscfIdWithPayment, player
+        async.series([
+          (cb2) => {
+            // Retreive the actual message using the message id
+            gmail.users.messages.get({auth: auth, userId: 'me', 'id': messageId}, (err, response) => {
+              if (err) return cb2(err)
+              readMessageIds.push(messageId)
+              let fromPaypal = false
+              for (let i = 0; i < response.data.payload.headers.length; i++) {
+                if (response.data.payload.headers[i].name === 'Subject'
+                    && response.data.payload.headers[i].value === 'Notification of payment received') {
+                  console.log(response.data.payload.headers[i].name + ": " + response.data.payload.headers[i].value)
+                  fromPaypal = true
+                  break
+                }
+              }
+
+              if (!fromPaypal) return cb2()
+              if (response.data.payload.body.size === 0) return cb2()
+
+              let raw = response.data.payload.body.data
+              let buff = new Buffer(raw, 'base64')
+              let text = buff.toString()
+              // console.log(text)
+              const $ = cheerio.load(text)
+              let elem = $('span:contains("0701")').eq(-1)
+              let playerText = $(elem).next().text()
+              uscfIdWithPayment = playerText.split(':')[0].trim()
+              cb2(null, uscfIdWithPayment)
+            })
+          },
+          (cb2) => {
+            if (!uscfIdWithPayment) return cb2()
+            Registration.findOneAndRemove({ uscfId: uscfIdWithPayment }, (err, doc) => {
+              if (err) return cb2(err)
+              console.log('Remove pending registraion for ' + uscfIdWithPayment)
+              let index = pendingRegistrations.indexOf(uscfIdWithPayment)
+              if (index > -1) {
+                pendingRegistrations.splice(index, 1)
+              }
+              player = doc
+              cb2(null, doc)
+            })
+          },
+          (cb2) => {
+            if (!player) return cb2()
+            console.log('Update player list for ' + player.uscfId)
+            Player.findOneAndUpdate({ uscfId: player.uscfId },
+              { $set: {
+                uscfId: player.uscfId,
+                firstName: player.firstName,
+                lastName: player.lastName,
+                rating: player.rating,
+                state: player.state,
+                email: player.email,
+                phone: player.phone,
+                tournament: player.tournament,
+                section: player.section,
+                byes: player.byes
+              }},
+              { new: true, upsert: true },
+              (err, doc) => {
+                if (err) return cb2(err)
+                cb2(null, doc)
+              })
+          },
+          (cb2) => {
+            if (!player) return cb2()
+            console.log('Email registration to ' + player.email)
+            let transporter = nodemailer.createTransport({
+              service: 'gmail',
+              auth: {
+                user: 'bostonelitechess@gmail.com',
+                pass: 'xxxx'
+              }
+            })
+            let byeRequests = (player.byes && player.byes.length > 0) ? 'Round ' + player.byes.join(',') : 'None'
+            let section = player.section.charAt(0).toUpperCase() + player.section.slice(1)
+            let mailOptions = {
+              from: 'bostonelitechess@gmail.com',
+              to: player.email,
+              subject: '2nd BECA Tournament Registration',
+              text: `Thank you for registering for ${ player.tournament }. \
+              \n\nPlayer: ${ player.firstName } ${ player.lastName } \
+              \nSection: ${ section } \
+              \nBye Requests: ${ byeRequests } \
+              \nTotal Payment: $${ player.payment } \
+              \n\nIf you have any questions or need to withdraw, please email bostonelitechess@gmail.com. \
+              \n\nBest wishes, \
+              \nBoston Elite Chess Academy`
+            }
+            transporter.sendMail(mailOptions, (error, info) => {
+              if (error) {
+                console.log(`Failed to email ${ player.email }`)
+                console.log(error)
+              } else {
+                // console.log('Email sent: ' + info.response)
+              }
+              cb2()
+            })
+          }
+        ], (err, rst2) => {
+          if (err) return cb1(err)
+          cb1()
+        })
+      }, (err, rst1) => {
+        if (err) return callback(err)
+        callback()
+      })
+    }
+  ], (err, data) => {
     if (err) {
       console.log('The API returned an error: ' + err)
-      return
+    } else {
+      // console.log(data[1])
+      if (pendingRegistrations.length === 0) {
+        clearInterval(monitor)
+        monitor = null
+      }
     }
-
-    // Get the message id which we will need to retreive tha actual message next.
-    var message_id = response.data.messages[0]['id']
-
-    // Retreive the actual message using the message id
-    gmail.users.messages.get({auth: auth, userId: 'me', 'id': message_id}, function(err, response) {
-      if (err) {
-        console.log('The API returned an error: ' + err)
-        return
-      }
-
-      // console.log(response['data'])
-      let fromPaypal = false
-      for (let i = 0; i < response.data.payload.headers.length; i++) {
-        if (response.data.payload.headers[i].name === 'Subject'
-            && response.data.payload.headers[i].value === 'Notification of payment received') {
-          console.log(response.data.payload.headers[i].name + ": " + response.data.payload.headers[i].value)
-          fromPaypal = true
-          break
-        }
-      }
-
-      if (!fromPaypal) {
-        return
-      }
-
-      if (response.data.payload.body.size === 0) {
-        return
-      }
-
-      let raw = response.data.payload.body.data
-      let buff = new Buffer(raw, 'base64')
-      let text = buff.toString()
-      // console.log(text)
-      const $ = cheerio.load(text)
-      let elem = $('span:contains("0701")').eq(-1)
-      console.log($(elem).html())
-      let player = $(elem).next().text()
-      console.log(player.split(':')[0])
-    })
   })
 }
 

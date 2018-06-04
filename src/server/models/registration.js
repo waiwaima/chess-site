@@ -12,6 +12,7 @@ const schema = new Schema({
   tournament: String,
   section: String,
   byes: [String],
+  payment: Number,
   timestamp: String
 })
 schema.set('toJSON', {
@@ -19,4 +20,4 @@ schema.set('toJSON', {
   versionKey: false
 })
 
-module.exports = mongoose.model('Player', schema)
+module.exports = mongoose.model('Registration', schema)
