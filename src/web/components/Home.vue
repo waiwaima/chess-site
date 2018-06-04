@@ -200,7 +200,7 @@ export default {
         info.entryFee = '55'
       } else if (section === 'u2000') {
         info.section = 'U2000'
-        info.entryFee = '0.01'
+        info.entryFee = '45'
       } else if (section === 'u1600') {
         info.section = 'U1600'
         info.entryFee = '45'
