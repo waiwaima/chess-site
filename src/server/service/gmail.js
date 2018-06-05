@@ -169,7 +169,7 @@ function parsePlayerId(auth) {
     },
     (callback) => {
       async.forEach(messageIds, (messageId, cb1) => {
-        let uscfIdWithPayment, player
+        let uscfIds = []
         async.series([
           (cb2) => {
             // Retreive the actual message using the message id
@@ -178,8 +178,8 @@ function parsePlayerId(auth) {
               readMessageIds.push(messageId)
               let fromPaypal = false
               for (let i = 0; i < response.data.payload.headers.length; i++) {
-                if (response.data.payload.headers[i].name === 'Subject'
-                    && response.data.payload.headers[i].value === 'Notification of payment received') {
+                if (response.data.payload.headers[i].name === 'From'
+                    && response.data.payload.headers[i].value.indexOf('service@paypal.com') > -1) {
                   console.log(response.data.payload.headers[i].name + ": " + response.data.payload.headers[i].value)
                   fromPaypal = true
                   break
@@ -194,79 +194,98 @@ function parsePlayerId(auth) {
               let text = buff.toString()
               // console.log(text)
               const $ = cheerio.load(text)
-              let elem = $('span:contains("0701")').eq(-1)
-              let playerText = $(elem).next().text()
-              uscfIdWithPayment = playerText.split(':')[0].trim()
-              cb2(null, uscfIdWithPayment)
-            })
-          },
-          (cb2) => {
-            if (!uscfIdWithPayment) return cb2()
-            Registration.findOneAndRemove({ uscfId: uscfIdWithPayment }, (err, doc) => {
-              if (err) return cb2(err)
-              console.log('Remove pending registraion for ' + uscfIdWithPayment)
-              let index = pendingRegistrations.indexOf(uscfIdWithPayment)
-              if (index > -1) {
-                pendingRegistrations.splice(index, 1)
+              let elems = $('span:contains("0701")')
+              for (let i = 0; i < elems.length; i++) {
+                let elem = elems.eq(i)
+                if ($(elem).find('span').length === 0) {
+                  let player = $(elem).next().text()
+                  let uscfId = player.split(':')[0].trim()
+                  uscfIds.push(uscfId)
+                }
               }
-              player = doc
-              cb2(null, doc)
+              cb2(null, uscfIds)
             })
           },
           (cb2) => {
-            if (!player) return cb2()
-            console.log('Update player list for ' + player.uscfId)
-            Player.findOneAndUpdate({ uscfId: player.uscfId },
-              { $set: {
-                uscfId: player.uscfId,
-                firstName: player.firstName,
-                lastName: player.lastName,
-                rating: player.rating,
-                state: player.state,
-                email: player.email,
-                phone: player.phone,
-                tournament: player.tournament,
-                section: player.section,
-                byes: player.byes
-              }},
-              { new: true, upsert: true },
-              (err, doc) => {
-                if (err) return cb2(err)
-                cb2(null, doc)
+            if (uscfIds.length === 0) return cb2()
+            async.forEach(uscfIds, (uscfIdWithPayment, cb3) => {
+              let player
+              async.series([
+                (cb4) => {
+                  Registration.findOneAndRemove({ uscfId: uscfIdWithPayment }, (err, doc) => {
+                    if (err) return cb4(err)
+                    console.log('Remove pending registraion for ' + uscfIdWithPayment)
+                    let index = pendingRegistrations.indexOf(uscfIdWithPayment)
+                    if (index > -1) {
+                      pendingRegistrations.splice(index, 1)
+                    }
+                    player = doc
+                    cb4(null, doc)
+                  })
+                },
+                (cb4) => {
+                  if (!player) return cb4()
+                  console.log('Update player list for ' + player.uscfId)
+                  Player.findOneAndUpdate({ uscfId: player.uscfId },
+                    { $set: {
+                      uscfId: player.uscfId,
+                      firstName: player.firstName,
+                      lastName: player.lastName,
+                      rating: player.rating,
+                      state: player.state,
+                      email: player.email,
+                      phone: player.phone,
+                      tournament: player.tournament,
+                      section: player.section,
+                      byes: player.byes
+                    }},
+                    { new: true, upsert: true },
+                    (err, doc) => {
+                      if (err) return cb4(err)
+                      cb4(null, doc)
+                    })
+                },
+                (cb4) => {
+                  if (!player) return cb4()
+                  console.log('Email registration to ' + player.email)
+                  let transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                      user: 'bostonelitechess@gmail.com',
+                      pass: 'xxxx'
+                    }
+                  })
+                  let byeRequests = (player.byes && player.byes.length > 0) ? 'Round ' + player.byes.join(',') : 'None'
+                  let section = player.section.charAt(0).toUpperCase() + player.section.slice(1)
+                  let mailOptions = {
+                    from: 'bostonelitechess@gmail.com',
+                    to: player.email,
+                    subject: '2nd BECA Tournament Registration',
+                    text: `Thank you for registering for ${ player.tournament }. \
+                    \n\nPlayer: ${ player.firstName } ${ player.lastName } \
+                    \nSection: ${ section } \
+                    \nBye Requests: ${ byeRequests } \
+                    \nTotal Payment: $${ player.payment } \
+                    \n\nIf you have any questions or need to withdraw, please email bostonelitechess@gmail.com. \
+                    \n\nBest wishes, \
+                    \nBoston Elite Chess Academy`
+                  }
+                  transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                      console.log(`Failed to email ${ player.email }`)
+                      console.log(error)
+                    } else {
+                      // console.log('Email sent: ' + info.response)
+                    }
+                    cb4()
+                  })
+                }
+              ], (err, rst4) => {
+                if (err) return cb3()
+                cb3()
               })
-          },
-          (cb2) => {
-            if (!player) return cb2()
-            console.log('Email registration to ' + player.email)
-            let transporter = nodemailer.createTransport({
-              service: 'gmail',
-              auth: {
-                user: 'bostonelitechess@gmail.com',
-                pass: 'xxxx'
-              }
-            })
-            let byeRequests = (player.byes && player.byes.length > 0) ? 'Round ' + player.byes.join(',') : 'None'
-            let section = player.section.charAt(0).toUpperCase() + player.section.slice(1)
-            let mailOptions = {
-              from: 'bostonelitechess@gmail.com',
-              to: player.email,
-              subject: '2nd BECA Tournament Registration',
-              text: `Thank you for registering for ${ player.tournament }. \
-              \n\nPlayer: ${ player.firstName } ${ player.lastName } \
-              \nSection: ${ section } \
-              \nBye Requests: ${ byeRequests } \
-              \nTotal Payment: $${ player.payment } \
-              \n\nIf you have any questions or need to withdraw, please email bostonelitechess@gmail.com. \
-              \n\nBest wishes, \
-              \nBoston Elite Chess Academy`
-            }
-            transporter.sendMail(mailOptions, (error, info) => {
-              if (error) {
-                console.log(`Failed to email ${ player.email }`)
-                console.log(error)
-              } else {
-                // console.log('Email sent: ' + info.response)
-              }
+            }, (err, rst3) => {
+              if (err) return cb2(err)
               cb2()
             })
           }
