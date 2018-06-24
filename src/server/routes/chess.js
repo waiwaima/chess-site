@@ -10,6 +10,7 @@ const Player = require('../models/player')
 const Member = require('../models/member')
 const Registration = require('../models/registration')
 const gmailService = require('../service/gmail')
+const memberService = require('../service/member-lookup')
 
 module.exports = function () {
   const router = express.Router()
@@ -408,6 +409,16 @@ module.exports = function () {
         res.json(docs[2])
       }
     })
+  })
+
+  router.get('/members/search', (req, res) => {
+    const keyword = req.query.keyword
+    memberService.searchMembers(keyword, (err, data => {
+      if (err) {
+        res.status(500).send({ message: `Did not find membership for ${ keyword }` })
+      }
+      res.json(data)
+    }))
   })
 
   return router

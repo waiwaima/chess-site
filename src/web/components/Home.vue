@@ -43,7 +43,7 @@
                     li Top U2200 -- $100
                 v-layout.action(row justify-center)
                   v-btn(small @click.native="register('master')") Register
-          v-card.light-background
+          v-card.last
             v-layout(column align-start)
               v-layout(row align-center)
               div.name U2000
@@ -61,7 +61,7 @@
                   li 2nd -- $100
               v-layout.action.action-mt(row justify-center)
                 v-btn(small @click.native="register('u2000')") Register
-          v-card
+          // v-card
             v-layout(column align-start)
               div.name U1600
               div.subname Open to USCF 1200 - 1599
@@ -78,7 +78,7 @@
                   li 2nd -- $100
               v-layout.action.action-mt(row justify-center)
                 v-btn(small @click.native="register('u1600')") Register
-          v-card.light-background
+          // v-card.light-background
             v-layout(column align-start)
               div.name U1200
               div.subname Open to USCF 800 - 1199
@@ -242,7 +242,7 @@ export default {
   margin-left: 16px
   margin-right: 16px
 .section .last
-  margin-left: 16px
+  margin-left: 32px
 .section .name
   font-size: 1.3em
   font-weight: 600
