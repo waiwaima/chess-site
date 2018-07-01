@@ -72,14 +72,14 @@ export default {
         standings: false,
         wallchart: false,
         master: false,
-        u2000: false,
-        u1600: false
+        u2000: false
+        // u1600: false
       },
       active: 'master',
       tabs: [
         {text: 'Master', value: 'master'},
-        {text: 'U2000', value: 'u2000'},
-        {text: 'U1600', value: 'u1600'}
+        {text: 'U2000', value: 'u2000'}
+        // {text: 'U1600', value: 'u1600'}
       ],
       wallchartHtml: {
         master: '',
@@ -275,7 +275,8 @@ export default {
       this.initLoadStatus()
       this.loadWallchart()
       this.loadStanding()
-      const sections = ['master', 'u2000', 'u1600']
+      // const sections = ['master', 'u2000', 'u1600']
+      const sections = ['master', 'u2000']
       for (let i = 0; i < sections.length; i++) {
         this.loadPairing(sections[i])
       }

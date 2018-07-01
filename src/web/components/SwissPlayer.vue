@@ -1,5 +1,8 @@
 <template lang="pug">
 .swiss-player
+  .admin.mb-2(v-if="user === 'admin'")
+    v-layout(row justify-start)
+      v-btn(color="primary" @click.native="exportPlayerList") Export
   v-layout(column justify-start)
     v-flex
       v-layout(row justify-start)
@@ -31,6 +34,8 @@
 <script>
 import axios from 'axios'
 import { mapState } from 'vuex'
+const XLSX = require('xlsx')
+const FileSaver = require('file-saver')
 const moment = require('moment')
 moment.locale()
 
@@ -144,6 +149,9 @@ export default {
       return moment(new Date()).format('MMMM D, YYYY')
     },
     ...mapState({
+      user (state) {
+        return state.currentUser
+      },
       players (state) {
         this.items = state.players
         this.items.sort((a, b) => {
@@ -197,6 +205,56 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+    exportPlayerList () {
+      axios.get('/api/players')
+        .then(response => {
+          let data = response.data
+          let players = []
+          for (let i = 0; i < data.length; i++) {
+            players.push({
+              firstName: data[i].firstName,
+              lastName: data[i].lastName,
+              id: data[i].uscfId,
+              rating: parseInt(data[i].rating),
+              byes: (data[i].byes && data[i].byes.length > 0) ? 'Round ' + data[i].byes.join(',') : '',
+              state: data[i].state
+            })
+          }
+          players.sort((a, b) => (b.rating - a.rating))
+          // sheet
+          let results = []
+          let title = ['First Name', 'Last Name', 'USCF ID', 'Rating', 'Byes', 'State']
+          let wscols = [150, 150, 100, 100, 100, 50]
+          results.push(title)
+          for (let i = 0; i < players.length; i++) {
+            results.push([
+              players[i].firstName,
+              players[i].lastName,
+              players[i].id,
+              players[i].rating,
+              players[i].byes,
+              players[i].state
+            ])
+          }
+          let ws = XLSX.utils.aoa_to_sheet(results)
+          ws['!cols'] = wscols
+          let wb = XLSX.utils.book_new()
+          XLSX.utils.book_append_sheet(wb, ws, 'Players')
+          let wbout = XLSX.write(wb, {type: 'binary', bookType: 'xlsx'})
+          FileSaver.saveAs(new Blob([this.s2ab(wbout)], { type: 'application/octet-stream' }), 'players.xlsx')
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    s2ab (s) {
+      const buf = new ArrayBuffer(s.length)
+      const view = new Uint8Array(buf)
+      for (let i = 0; i !== s.length; ++i) {
+        view[i] = s.charCodeAt(i) & 0xFF
+      }
+      return buf
     }
   },
   created () {
@@ -232,6 +290,13 @@ export default {
   width: 100%
   padding: 16px 16px
   background-color: #f7f7f6
+.admin button
+  color: #fff
+  background-color: #cc6553 !important
+.admin .subtitle
+  font-weight: 600
+  padding-left: 8px
+  padding-bottom: 4px
 .total
   color: #cc6553
 .fw-600

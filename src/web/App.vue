@@ -19,7 +19,7 @@ v-app
         v-toolbar-items.hidden-xs-only
           v-btn(:style="homeStyle" @click.native="routeTo('home')" flat) Home
           v-btn(:style="playersStyle" @click.native="routeTo('players')" flat) Players
-          // v-btn(:style="pairingsStyle" @click.native="routeTo('pairings')" flat) Pairings & Results
+          v-btn(:style="pairingsStyle" @click.native="routeTo('pairings')" flat) Pairings & Results
           v-btn(:style="venueStyle" @click.native="routeTo('venue')" flat) Venue
           v-btn(:style="photosStyle" @click.native="routeTo('photos')" flat) Photos
           v-btn(:style="eventsStyle" @click.native="routeTo('events')" flat) Finished Events
@@ -57,8 +57,8 @@ export default {
     return {
       items: [
         {text: 'Home', value: 'home', style: 'homeStyle'},
-        {text: 'Players & Pairings', value: 'players', style: 'playersStyle'},
-        // {text: 'Pairings & Results', value: 'pairings', style: 'pairingsStyle'},
+        {text: 'Players', value: 'players', style: 'playersStyle'},
+        {text: 'Pairings & Results', value: 'pairings', style: 'pairingsStyle'},
         {text: 'Venue', value: 'venue', style: 'venueStyle'},
         {text: 'Photos', value: 'photos', style: 'photosStyle'},
         {text: 'Finished Events', value: 'events', style: 'eventsStyle'}
