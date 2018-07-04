@@ -218,7 +218,9 @@ export default {
               id: data[i].uscfId,
               rating: parseInt(data[i].rating),
               byes: (data[i].byes && data[i].byes.length > 0) ? 'Round ' + data[i].byes.join(',') : '',
-              state: data[i].state
+              state: data[i].state,
+              email: data[i].email,
+              phone: data[i].phone
             })
           }
           players.sort((a, b) => (b.rating - a.rating))
