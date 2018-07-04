@@ -224,8 +224,8 @@ export default {
           players.sort((a, b) => (b.rating - a.rating))
           // sheet
           let results = []
-          let title = ['First Name', 'Last Name', 'USCF ID', 'Rating', 'Byes', 'State']
-          let wscols = [150, 150, 100, 100, 100, 50]
+          let title = ['First Name', 'Last Name', 'USCF ID', 'Rating', 'Byes', 'State', 'Email', 'Phone']
+          let wscols = [150, 150, 100, 100, 100, 50, 150, 100]
           results.push(title)
           for (let i = 0; i < players.length; i++) {
             results.push([
@@ -234,7 +234,9 @@ export default {
               players[i].id,
               players[i].rating,
               players[i].byes,
-              players[i].state
+              players[i].state,
+              players[i].email,
+              players[i].phone
             ])
           }
           let ws = XLSX.utils.aoa_to_sheet(results)
