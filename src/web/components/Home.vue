@@ -11,7 +11,7 @@
                     span.name {{ tournamentName }}
                 v-flex(xs12 align-end flexbox)
                   v-layout(column justify-center)
-                    span.detail Sunday, July 01, 2018
+                    span.detail Sunday, September 16, 2018
                 v-flex(xs12 align-end flexbox)
                   v-layout(column)
                     span.detail Four Points by Sheraton Norwood
@@ -24,60 +24,69 @@
                     span.detail Rounds: 10:00am, 1:45pm, 5:30pm
       v-flex(xs12)
         v-layout.section(row wrap)
-          v-card
+          v-card.first
             v-layout(row align-center)
               v-layout(column align-start)
                 div.name Master
-                div.subname Open to USCF 2000+
+                div.subname Open to USCF 1950+
                 div.content
                   span.subtitle Entry Fee:
                   ul.ml-4
-                    li $55 by 6/23/
-                    li $60 by 6/30
+                    li $50 by 8/15
+                    li $55 by 9/8
+                    li $60 by 9/15
                     li $65 onsite
                     li GM/IM/WGM free
                 div.content
-                  span.subtitle Guaranteed Money Prizes:
+                  span.subtitle Money Prizes
+                  span.ml-1 (with 15 paid entries):
                   ul.ml-4
-                    li 1st -- $200, 2nd -- $100
-                    li Top U2200 -- $100
+                    li 1st -- $400
+                    li 2nd -- $200
+                    li 3rd -- $100
                 v-layout.action(row justify-center)
-                  v-btn(small @click.native="register('master')") Register
-          v-card.last
+                  v-btn(small @click.native="register('master')" disabled) Register
+          v-card.other
             v-layout(column align-start)
               v-layout(row align-center)
-              div.name U2000
-              div.subname Open to USCF 1600 - 1999
+              div.name U2050
+              div.subname Open to USCF 1650 - 2050
               div.content
                 span.subtitle Entry Fee:
                 ul.ml-4
-                  li $45 by 6/23
-                  li $50 by 6/30
+                  li $40 by 8/15
+                  li $45 by 9/8
+                  li $50 by 9/15
                   li $55 onsite
               div.content
-                span.subtitle Guaranteed Money Prizes:
+                span.subtitle Money Prizes
+                span.ml-1 (with 20 paid entries):
                 ul.ml-4
-                  li 1st -- $150
-                  li 2nd -- $100
+                  li 1st -- $250
+                  li 2nd -- $150
+                  li 3rd -- $80
               v-layout.action.action-mt(row justify-center)
-                v-btn(small @click.native="register('u2000')") Register
-          // v-card
+                v-btn(small @click.native="register('u2000')" disabled) Register
+          v-card.last
             v-layout(column align-start)
-              div.name U1600
-              div.subname Open to USCF 1200 - 1599
+              div.name U1750
+              div.subname Open to USCF 1300 - 1750
               div.content
                 span.subtitle Entry Fee:
                 ul.ml-4
-                  li $45 by 6/23
-                  li $50 by 6/30
+                  li $40 by 8/15
+                  li $45 by 9/8
+                  li $50 by 9/15
                   li $55 onsite
               div.content
-                span.subtitle Guaranteed Money Prizes:
+                span.subtitle Money Prizes
+                span.ml-1 (with 20 paid entries):
                 ul.ml-4
-                  li 1st -- $150
-                  li 2nd -- $100
+                  li 1st -- $250
+                  li 2nd -- $150
+                  li 3rd -- $80
               v-layout.action.action-mt(row justify-center)
-                v-btn(small @click.native="register('u1600')") Register
+                v-btn(small @click.native="register('u1600')" disabled) Register
           // v-card.light-background
             v-layout(column align-start)
               div.name U1200
@@ -129,9 +138,9 @@
       div.mt-3
         ul.align-left.mt-2.highlight-ml
           li Onsite registration 9:00am - 9:30am.
-          li Withdraw: by 6/29, $5 process fee for Paypal refund; after that $15 process fee.
+          li Withdraw: by 9/13, $1 process fee for Paypal refund; after that $5 process fee.
           li All byes need to be declared before the 1st round; last round 0 point bye only.
-          li July 2018 supplemental rating is used for registration/pairing/prize purposes. Live rating on the registration date can be used for registration as well.
+          li September 2018 supplemental rating is used for registration/pairing/prize purposes. Live rating on the registration date can be used for registration as well.
           li Please bring your own chess set and clock.
           li Contact
             span.ml-1.text-highlight Yi Wang
@@ -143,8 +152,9 @@
       div.mt-3
         .highlight Highlights
         ul.align-left.mt-2.highlight-ml
-          li GM Ivanov and IM Shmelov confirmed to play. The confirmed GM/IMs will NOT be paired to play each other, and will not be eligible for money prize.
+          // li GM Ivanov and IM Shmelov confirmed to play. The confirmed GM/IMs will NOT be paired to play each other, and will not be eligible for money prize.
           li Free GM game analysis available.
+          li First time players for Boston Elite Tournaments have $20 discount (refund after online registration).
           li Top girls prize available, and will be announced before the tournament.
           li Winner of the lower section will be invited to play in the next upper section in the next tournament. No play-up allowed otherwise.
       div.mt-3
@@ -185,7 +195,7 @@ export default {
   name: 'Home',
   data () {
     return {
-      tournamentName: '2nd Boston Elite Chess Tournament'
+      tournamentName: '3rd Boston Elite Chess Tournament'
     }
   },
   methods: {
@@ -242,7 +252,7 @@ export default {
   margin-left: 16px
   margin-right: 16px
 .section .last
-  margin-left: 32px
+  margin-left: 16px
 .section .name
   font-size: 1.3em
   font-weight: 600

@@ -30,7 +30,13 @@
               div(style="overflow:auto; width:100%")
                 div(v-html="selectedTournamentStandingHtml")
           v-tabs-content(id="tab-photos")
-            tournament-photo
+            // tournament-photo
+            v-layout.photo(column justify-start)
+              v-flex(x12 sm6)
+                v-card
+                  v-card-media.tournament(class="white--text" :src="photoIcon")
+                  v-card-actions
+                    v-btn(flat color="orange" @click.native="explore(photoLink)") See more photos
       v-card.result.elevation-0(v-else)
         div(style="overflow:auto; width:100%")
           div(v-html="selectedTournamentStandingHtml")
@@ -46,12 +52,34 @@ export default {
     return {
       listEvent: true,
       tournaments: [
-        {name: '1st Boston Elite Quads Invitational', date: 'April 8, 2018', value: '1st-quads-invitational', hasPhoto: false},
-        {name: '1st Boston Elite Chess Tournament', date: 'February 11, 2018', value: '1st-chess-tournament', hasPhoto: true}
+        {
+          name: '2nd Boston Elite Chess Tournament',
+          date: 'July 1, 2018',
+          value: '2nd-chess-tournament',
+          hasPhoto: true,
+          photoIcon: '/static/events/2nd-chess-tournament.jpg',
+          photoLink: 'https://photos.app.goo.gl/7RU7X6k3YxBYWRKN7'
+        },
+        {
+          name: '1st Boston Elite Quads Invitational',
+          date: 'April 8, 2018',
+          value: '1st-quads-invitational',
+          hasPhoto: false
+        },
+        {
+          name: '1st Boston Elite Chess Tournament',
+          date: 'February 11, 2018',
+          value: '1st-chess-tournament',
+          hasPhoto: true,
+          photoIcon: '/static/events/1st-chess-tournament.jpg',
+          photoLink: 'https://photos.app.goo.gl/UYAG0YvvSOZkZXdx1'
+        }
       ],
       selectedTournamentName: '',
       selectedTournamentStandingHtml: '',
       hasPhoto: false,
+      photoIcon: '',
+      photoLink: '',
       loading: false
     }
   },
@@ -65,6 +93,10 @@ export default {
         if (tournament === this.tournaments[i].value) {
           this.selectedTournamentName = this.tournaments[i].name
           this.hasPhoto = this.tournaments[i].hasPhoto
+          if (this.hasPhoto) {
+            this.photoIcon = this.tournaments[i].photoIcon
+            this.photoLink = this.tournaments[i].photoLink
+          }
           break
         }
       }
@@ -83,6 +115,10 @@ export default {
     },
     toggleView () {
       this.listEvent = !this.listEvent
+    },
+    explore (url) {
+      let win = window.open(url, '_blank')
+      win.focus()
     }
   },
   components: {
@@ -127,9 +163,17 @@ export default {
   font-weight: 500
 .result
   padding: 16px 16px
+.photo
+  padding: 24px 8px
+.tournament
+  height: 300px !important
 @media screen and (max-device-width: 600px)
   .events
     padding: 16px 2px
   .result
     padding: 8px 2px
+  .photo
+    padding: 16px 0
+  .tournament
+    height: 200px !important
 </style>
