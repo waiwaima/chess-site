@@ -79,13 +79,19 @@ function scrape (task, cb) {
         .then(response => {
           let $ = cheerio.load(response.data)
           let elem = $('td:contains("Regular Rating")').eq(-1)
-          // parse rating
-          let ratingHtml = $(elem).next().find('nobr').eq(0).html().trim()
-          // console.log(ratingHtml)
-          ratingPart = ratingHtml.split('&')[0]
-          let rsts = ratingPart.match(/\d{3,4}/)
-          if (rsts && rsts.length > 0) {
-            rating = rsts[0].trim()
+          let nextRatingStr = $(elem).next().next().text()
+          // console.log(`next month's rating: ${ nextRatingStr }`)
+          if (nextRatingStr && nextRatingStr.trim()) {
+            rating = nextRatingStr.trim()
+          } else {
+            // parse rating
+            let ratingHtml = $(elem).next().find('nobr').eq(0).html().trim()
+            // console.log(ratingHtml)
+            ratingPart = ratingHtml.split('&')[0]
+            let rsts = ratingPart.match(/\d{3,4}/)
+            if (rsts && rsts.length > 0) {
+              rating = rsts[0].trim()
+            }
           }
           callback(null, { rating: rating })
         })
