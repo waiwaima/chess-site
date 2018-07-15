@@ -9,6 +9,7 @@ export default new Vuex.Store({
     tournamentSection: {
       name: '',
       section: '',
+      title: '',
       entryFee: 0
     },
     players: []
@@ -20,6 +21,7 @@ export default new Vuex.Store({
     setTournamentSection (state, tournament) {
       state.tournamentSection.name = tournament.name
       state.tournamentSection.section = tournament.section
+      state.tournamentSection.title = tournament.title
       state.tournamentSection.entryFee = tournament.entryFee
     },
     setTournamentPlayers (state, players) {

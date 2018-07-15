@@ -46,8 +46,8 @@ export default {
       active: 'master',
       tabs: [
         {text: 'Master', value: 'master'},
-        {text: 'U2000', value: 'u2000'}
-        // {text: 'U1600', value: 'u1600'},
+        {text: 'U2050', value: 'u2000'},
+        {text: 'U1750', value: 'u1600'}
         // {text: 'U1200', value: 'u1200'}
       ],
       headers: [

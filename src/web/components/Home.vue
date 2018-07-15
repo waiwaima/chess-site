@@ -190,33 +190,65 @@
 
 <script>
 import router from '../router'
+const moment = require('moment')
+moment.locale()
 
 export default {
   name: 'Home',
   data () {
     return {
-      tournamentName: '3rd Boston Elite Chess Tournament'
+      tournamentName: '3rd Boston Elite Chess Tournament',
+      master: {
+        section: 'master',
+        title: 'Master',
+        description: '',
+        fees: [
+          { amount: 50, date: '8/15/18' },
+          { amount: 55, date: '9/8/18' },
+          { amount: 60, date: '9/15/18' },
+          { amount: 65, date: '' }
+        ],
+        feeAdditions: ['GM/IM/WGM free'],
+        prizes: []
+      },
+      u2000: {
+        section: 'u2000',
+        title: 'U2050',
+        fees: [
+          { amount: 40, date: '8/15/18' },
+          { amount: 45, date: '9/8/18' },
+          { amount: 50, date: '9/15/18' },
+          { amount: 55, date: '' }
+        ]
+      },
+      u1600: {
+        section: 'u1600',
+        title: 'U1750',
+        fees: [
+          { amount: 40, date: '8/15/18' },
+          { amount: 45, date: '9/8/18' },
+          { amount: 50, date: '9/15/18' },
+          { amount: 55, date: '' }
+        ]
+      }
     }
   },
   methods: {
     register (section) {
       let info = {
         name: this.tournamentName,
-        section: '',
+        section: this[section].section,
+        title: this[section].title,
         entryFee: 0
       }
-      if (section === 'master') {
-        info.section = 'Master'
-        info.entryFee = '50'
-      } else if (section === 'u2000') {
-        info.section = 'U2000'
-        info.entryFee = '40'
-      } else if (section === 'u1600') {
-        info.section = 'U1600'
-        info.entryFee = '40'
-      } else {
-        info.section = 'U1200'
-        info.entryFee = '40'
+      let fees = this[section].fees
+      let rightNow = moment()
+      for (let i = 0; i < fees.length; i++) {
+        info.entryFee = fees[i].amount
+        if (!fees[i].date) break
+        let refDate = moment(fees[i].date, 'M/D/YY').add(1, 'day')
+        console.log(refDate.format('LLL'))
+        if (rightNow < refDate) break
       }
       this.$store.commit('setTournamentSection', info)
       router.push('/register')

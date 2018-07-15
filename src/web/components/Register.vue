@@ -29,13 +29,14 @@
           ref="email" :rules="[() => !!email || 'This field is required']")
         v-text-field(label="Phone" :mask="'phone'" v-model="phone" required
           ref="phone" :rules="[() => !!phone || 'This field is required']")
-        v-text-field(label="Section" v-model="tournamentSection.section" disabled)
         v-layout.mt-1(column justify-start)
-          div Bye Requests
+          div
+            span.label Bye Requests
           div.pl-5.bye
             v-checkbox(label="Round 1" v-model="byes" value="1")
             v-checkbox(label="Round 2" v-model="byes" value="2")
             v-checkbox(label="Round 3" v-model="byes" value="3")
+        v-text-field(label="Section" v-model="tournamentSection.title" disabled)
         v-text-field(label="Entry Fee" v-model="strEntryFee" disabled)
         v-layout.mt-2(row justify-center)
           v-btn(round :disabled="!inputValidated" @click.native="gotoPaypal") Submit
@@ -85,7 +86,7 @@ export default {
         this.items = []
         this.items.push({
           'name': state.tournamentSection.name,
-          'description': state.tournamentSection.section + ' section',
+          'description': state.tournamentSection.title + ' section',
           'quantity': '1',
           'price': state.tournamentSection.entryFee,
           'currency': 'USD'
@@ -111,7 +112,7 @@ export default {
         email: this.email,
         phone: this.phone,
         tournament: this.tournamentSection.name,
-        section: this.tournamentSection.section.toLowerCase(),
+        section: this.tournamentSection.section,
         byes: this.byes,
         payment: this.tournamentSection.entryFee
       })
@@ -122,8 +123,8 @@ export default {
           params.push('cmd=_cart')
           params.push('business=' + business)
           params.push('lc=US')
-          params.push('item_name=' + this.tournamentSection.name + ' - ' + this.tournamentSection.section)
-          params.push('item_number=0701')
+          params.push('item_name=' + this.tournamentSection.name + ' - ' + this.tournamentSection.title)
+          params.push('item_number=0916')
           params.push('on0=' + this.uscfId)
           params.push('os0=' + this.firstName + ' ' + this.lastName)
           params.push('amount=' + this.tournamentSection.entryFee)
@@ -163,7 +164,7 @@ export default {
         email: this.email,
         phone: this.phone,
         tournament: this.tournamentSection.name,
-        section: this.tournamentSection.section.toLowerCase(),
+        section: this.tournamentSection.section,
         byes: this.byes,
         payment: this.tournamentSection.entryFee
       })
@@ -200,8 +201,9 @@ export default {
       return rst
     },
     selectPlayer (event) {
+      console.log(event.data)
       let data = event.data
-      let fields = ['firstName', 'lastName', 'uscfId', 'rating', 'email', 'phone']
+      let fields = ['firstName', 'lastName', 'uscfId', 'rating']
       for (let i = 0; i < fields.length; i++) {
         let field = fields[i]
         if (data[field]) {
@@ -243,6 +245,9 @@ export default {
   font-weight: 500
 .card-container
   padding: 16px 24px
+.label
+  color: rgba(0, 0, 0, .54)
+  font-size: 16px
 @media screen and (max-device-width: 600px)
   .register
     padding: 16px 2px

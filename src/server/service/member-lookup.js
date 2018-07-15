@@ -6,16 +6,16 @@ let memberDB
 
 function loadMembers () {
   console.log('loading members into cache...')
-  Member.find({$or: [{ state: 'MA' }, { state: 'RI' }]},
-    (err, docs) => {
-      if (err) {
-        console.log('Failed to read members from DB')
-        return
-      }
-      let members = docs.filter(isActiveMember)
-      console.log(`Loaded ${ members.length } members into cache for rapid searching`)
-      memberDB = TAFFY(members)
-    })
+  let query = Member.find({$or: [{ state: 'MA' }, { state: 'RI' }]}).select('-phone -email')
+  query.exec((err, docs) => {
+    if (err) {
+      console.log('Failed to read members from DB')
+      return
+    }
+    let members = docs.filter(isActiveMember)
+    console.log(`Loaded ${ members.length } members into cache for rapid searching`)
+    memberDB = TAFFY(members)
+  })
 }
 
 function isActiveMember (json) {

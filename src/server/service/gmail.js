@@ -194,7 +194,7 @@ function parsePlayerId(auth) {
               let text = buff.toString()
               // console.log(text)
               const $ = cheerio.load(text)
-              let elems = $('span:contains("0701")')
+              let elems = $('span:contains("0916")')
               for (let i = 0; i < elems.length; i++) {
                 let elem = elems.eq(i)
                 if ($(elem).find('span').length === 0) {
