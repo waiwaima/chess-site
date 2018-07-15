@@ -10,8 +10,15 @@
   v-layout(justify-start)
     v-flex(xs12 sm10 md8)
       v-card.card-container
-        v-text-field(label="First Name" v-model="firstName" required
-          ref="firstName" :rules="[() => !!firstName || 'This field is required']")
+        autocomplete(ref="firstName" label="First Name" required=true
+          :options="playerOptions"
+          :process="processPlayers"
+          :allowUserInput="true"
+          :dataStruct="{ description: '', shownText: '', data: {} }"
+          :bindValue="{ description: '', shownText: '', data: {} }"
+          url="/api/members/search"
+          @select="selectPlayer($event)"
+          @updateInputOnly="firstName = $event")
         v-text-field(label="Last Name" v-model="lastName" required
           ref="lastName" :rules="[() => !!lastName || 'This field is required']")
         v-text-field(label="USCF ID" :mask="'########'" v-model="uscfId" required
@@ -47,7 +54,7 @@
 
 <script>
 import axios from 'axios'
-import Paypal from 'vue-paypal-checkout'
+import Autocomplete from 'components/Autocomplete'
 import { mapState } from 'vuex'
 import router from '../router'
 
@@ -66,7 +73,8 @@ export default {
       items: [],
       progressDialog: false,
       messageDialog: false,
-      message: ''
+      message: '',
+      playerOptions: []
     }
   },
   computed: {
@@ -175,10 +183,45 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+    processPlayers (data) {
+      let rst = []
+      for (let i = 0; i < data.length; i++) {
+        let player = data[i]
+        let firstName = player.firstName.split(' ')[0]
+        rst.push({
+          data: player,
+          shownText: firstName,
+          description: `${firstName} ${player.lastName}, ${player.uscfId}, ${player.rating}`
+        })
+        // currently comment out sorting because sorting results in bad performance
+        // rst.sort((a, b) => a.description.localeCompare(b.description))
+      }
+      return rst
+    },
+    selectPlayer (event) {
+      let data = event.data
+      let fields = ['firstName', 'lastName', 'uscfId', 'rating', 'email', 'phone']
+      for (let i = 0; i < fields.length; i++) {
+        let field = fields[i]
+        if (data[field]) {
+          this[field] = data[field]
+        } else {
+          this.$refs[field].reset()
+        }
+      }
+    },
+    reset () {
+      let fields = ['firstName', 'lastName', 'uscfId', 'rating', 'email', 'phone']
+      for (let i = 0; i < fields.length; i++) {
+        let field = fields[i]
+        this[field] = null
+        this.$refs[field].reset()
+      }
     }
   },
   components: {
-    Paypal
+    Autocomplete
   }
 }
 </script>

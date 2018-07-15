@@ -28,11 +28,11 @@ function isActiveMember (json) {
   return active
 }
 
-function searchMembers (keyword) {
+function searchMembers (keyword, callback) {
   let rst = memberDB([
     { firstName: { likenocase: keyword }}
   ]).get()
-  return rst
+  callback(null, rst)
 }
 
 setTimeout(loadMembers, 3000)

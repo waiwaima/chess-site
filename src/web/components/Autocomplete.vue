@@ -1,18 +1,18 @@
 <template lang="pug">
 div.autocomplete
-  v-text-field.input-field(v-model.trim="keyword.shownText"
+  v-text-field(ref="inputField" v-model.trim="keyword.shownText"
     :id="id"
     :name="name"
     :label="label"
-    :rules="validationRules"
+    :required="required"
+    :rules="rules"
     @input="onInput"
     @keyup.esc="isOpen = false"
     @blur="blur"
     @keydown.down="moveDown"
     @keydown.up="moveUp"
     @keydown.enter="select"
-    onclick="this.focus(); this.select()"
-    hide-details)
+    onclick="this.focus()")
   v-card.autocomplete-option-panel(v-show="isOpen")
     ul(class="option-list")
       li(v-for="(option, index) in filteredOptions"
@@ -35,6 +35,7 @@ export default {
     id: String,
     name: String,
     label: String,
+    required: Boolean,
     // local option list
     options: Array,
     // retrieve options locally which match keyword
@@ -43,14 +44,10 @@ export default {
     url: String,
     // url query params
     params: Object,
-    // for pax input, to tag name field when processing
-    filedType: String,
     // process the result retrieved from server before showing options
     process: Function,
     // rules for validation
     validationRules: Array,
-    // pass in value from searchCon
-    bindValue: Object,
     // data struct for keyword
     dataStruct: Object,
     // allowed for user input
@@ -62,7 +59,7 @@ export default {
         // baic template
         description: '', // description for options
         shownText: '',   // shown text in input filed
-        title: ''        // actual saved data
+        data: ''        // actual saved data
       },
       isOpen: false,
       showErrorInput: false,
@@ -71,12 +68,16 @@ export default {
       scrolledY: 0
     }
   },
-  mounted () {
-    this.keyword = this.bindValue
-  },
-  watch: {
-    bindValue: function (value) {
-      this.keyword = value
+  computed: {
+    rules () {
+      let rst = []
+      if (this.required) {
+        rst.push(() => !!this.keyword.shownText || 'This field is required')
+      }
+      if (this.validationRules && this.validationRules.length) {
+        rst = rst.concat(this.validationRules)
+      }
+      return rst
     }
   },
   methods: {
@@ -89,20 +90,22 @@ export default {
     filterOptions () {
       const re = new RegExp(this.keyword.shownText, 'i')
       let rst
+      // first try to find the matched optioins from local list if there are
       if (this.retrieveOptions) {
         const data = this.retrieveOptions(this.options, this.keyword.shownText)
-        rst = this.process(data, this.filedType)
+        rst = this.process(data)
         this.filteredOptions = rst
       } else {
-        rst = this.options.filter(o => o.title.match(re))
+        rst = this.options.filter(o => o.data.match(re))
       }
 
+      // if there is no matched in the local option list, retrieve from remote server
       if (!rst.length && this.url) {
         axios.get(this.url, {params: {keyword: this.keyword.shownText}})
           .then(response => {
             // console.log(response.data)
             const data = response.data
-            rst = this.process(data, this.filedType)
+            rst = this.process(data)
             this.filteredOptions = rst
           })
           .catch(err => {
@@ -129,22 +132,18 @@ export default {
         : (this.highlightedPosition - 1)
     },
     blur () {
+      console.log('... in blur ...')
       if (!this.allowUserInput) {
         this.select()
       } else {
         this.isOpen = false
-        if (this.filedType === 'surName' || this.filedType === 'givenName') {
-          this.keyword.shownText = this.keyword.shownText.toUpperCase()
-        }
         this.$emit('updateInputOnly', this.keyword.shownText)
       }
       this.$emit('blur')
     },
     select () {
+      console.log('... in select ...')
       this.isOpen = false
-      if (this.filedType === 'surName' || this.filedType === 'givenName') {
-        this.keyword.shownText = this.keyword.shownText.toUpperCase()
-      }
       const selectedOption = this.filteredOptions[this.highlightedPosition]
       if (selectedOption === undefined || this.keyword.shownText === '') {
         if (this.allowUserInput) {
@@ -156,34 +155,27 @@ export default {
         this.keyword = selectedOption
       }
       this.$emit('select', this.keyword)
+    },
+    reset () {
+      this.$refs['inputField'].reset()
     }
   }
 }
 
 function resetAutoCompletePosition () {
-  var distanceFromTop = document.documentElement.scrollTop
-  var panels = document.getElementsByClassName('autocomplete-option-panel')
+  let distanceFromTop = document.documentElement.scrollTop
+  let panels = document.getElementsByClassName('autocomplete-option-panel')
   for (let i = 0; i < panels.length; i++) {
     panels[i].style.marginTop = (-8 - distanceFromTop) + 'px'
   }
 }
 
 </script>
-<style lang="stylus">
-.input-field > .input-group__input > input[type="text"],
-.input-field label
-  font-size: 14px
-</style>
 
 <style lang="stylus" scoped>
 .autocomplete
   width: 100%
   height: 100%
-.input-field
-  width: 100%
-  height: 38px
-  min-width: 100px
-  max-width: 220px
 .autocomplete-option-panel
   z-index: 6
   position: fixed

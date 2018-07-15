@@ -6,6 +6,7 @@ const schema = new Schema({
   firstName: String,
   lastName: String,
   rating: Number,
+  title: String,
   state: String,
   email: String,
   phone: Number,

@@ -6,12 +6,14 @@ const schema = new Schema({
   firstName: String,
   lastName: String,
   rating: Number,
+  title: String,
   state: String,
   email: String,
   phone: Number,
   tournament: String,
   section: String,
-  byes: [String]
+  byes: [String],
+  payment: Number
 })
 schema.set('toJSON', {
   virtuals: true,

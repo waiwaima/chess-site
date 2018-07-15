@@ -45,7 +45,7 @@
                     li 2nd -- $200
                     li 3rd -- $100
                 v-layout.action(row justify-center)
-                  v-btn(small @click.native="register('master')" disabled) Register
+                  v-btn(small @click.native="register('master')") Register
           v-card.other
             v-layout(column align-start)
               v-layout(row align-center)
@@ -66,7 +66,7 @@
                   li 2nd -- $150
                   li 3rd -- $80
               v-layout.action.action-mt(row justify-center)
-                v-btn(small @click.native="register('u2000')" disabled) Register
+                v-btn(small @click.native="register('u2000')") Register
           v-card.last
             v-layout(column align-start)
               div.name U1750
@@ -86,7 +86,7 @@
                   li 2nd -- $150
                   li 3rd -- $80
               v-layout.action.action-mt(row justify-center)
-                v-btn(small @click.native="register('u1600')" disabled) Register
+                v-btn(small @click.native="register('u1600')") Register
           // v-card.light-background
             v-layout(column align-start)
               div.name U1200
@@ -207,16 +207,16 @@ export default {
       }
       if (section === 'master') {
         info.section = 'Master'
-        info.entryFee = '55'
+        info.entryFee = '50'
       } else if (section === 'u2000') {
         info.section = 'U2000'
-        info.entryFee = '45'
+        info.entryFee = '40'
       } else if (section === 'u1600') {
         info.section = 'U1600'
-        info.entryFee = '45'
+        info.entryFee = '40'
       } else {
         info.section = 'U1200'
-        info.entryFee = '45'
+        info.entryFee = '40'
       }
       this.$store.commit('setTournamentSection', info)
       router.push('/register')

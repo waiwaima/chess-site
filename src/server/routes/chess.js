@@ -413,12 +413,12 @@ module.exports = function () {
 
   router.get('/members/search', (req, res) => {
     const keyword = req.query.keyword
-    memberService.searchMembers(keyword, (err, data => {
+    memberService.searchMembers(keyword, (err, data) => {
       if (err) {
         res.status(500).send({ message: `Did not find membership for ${ keyword }` })
       }
       res.json(data)
-    }))
+    })
   })
 
   return router

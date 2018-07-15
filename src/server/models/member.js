@@ -7,6 +7,7 @@ const schema = new Schema({
   lastName: String,
   fullName: String,
   rating: Number,
+  title: String,
   expirationDate: String,
   state: String,
   email: String,
