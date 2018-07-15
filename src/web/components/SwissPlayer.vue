@@ -192,8 +192,10 @@ export default {
           let data = response.data
           let players = []
           for (let i = 0; i < data.length; i++) {
+            let fullName = data[i].firstName + ' ' + data[i].lastName
+            let name = data[i].title ? (data[i].title + ' ' + fullName) : fullName
             players.push({
-              name: data[i].firstName + ' ' + data[i].lastName,
+              name: name,
               rating: data[i].rating,
               id: data[i].uscfId,
               state: data[i].state,
