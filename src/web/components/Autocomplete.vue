@@ -123,7 +123,6 @@ export default {
       this.highlightedPosition = (this.highlightedPosition + 1) % this.filteredOptions.length
     },
     moveUp () {
-      console.log('key up...' + this.filteredOptions.length)
       if (!this.isOpen || !this.filteredOptions.length) {
         return
       }
@@ -132,7 +131,6 @@ export default {
         : (this.highlightedPosition - 1)
     },
     blur () {
-      console.log('... in blur ...')
       if (!this.allowUserInput) {
         this.select()
       } else {
@@ -142,7 +140,6 @@ export default {
       this.$emit('blur')
     },
     select () {
-      console.log('... in select ...')
       this.isOpen = false
       const selectedOption = this.filteredOptions[this.highlightedPosition]
       if (selectedOption === undefined || this.keyword.shownText === '') {
