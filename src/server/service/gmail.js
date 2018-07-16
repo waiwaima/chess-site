@@ -256,14 +256,13 @@ function parsePlayerId(auth) {
                     }
                   })
                   let byeRequests = (player.byes && player.byes.length > 0) ? 'Round ' + player.byes.join(',') : 'None'
-                  let section = player.section.charAt(0).toUpperCase() + player.section.slice(1)
                   let mailOptions = {
                     from: 'bostonelitechess@gmail.com',
                     to: player.email,
-                    subject: '2nd BECA Tournament Registration',
+                    subject: `${ player.tournament } Registration`,
                     text: `Thank you for registering for ${ player.tournament }. \
                     \n\nPlayer: ${ player.firstName } ${ player.lastName } \
-                    \nSection: ${ section } \
+                    \nSection: ${ player.sectionText } \
                     \nBye Requests: ${ byeRequests } \
                     \nTotal Payment: $${ player.payment } \
                     \n\nIf you have any questions or need to withdraw, please email bostonelitechess@gmail.com. \

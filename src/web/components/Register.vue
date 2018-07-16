@@ -113,6 +113,7 @@ export default {
         phone: this.phone,
         tournament: this.tournamentSection.name,
         section: this.tournamentSection.section,
+        sectionText: this.tournamentSection.title,
         byes: this.byes,
         payment: this.tournamentSection.entryFee
       })
@@ -165,6 +166,7 @@ export default {
         phone: this.phone,
         tournament: this.tournamentSection.name,
         section: this.tournamentSection.section,
+        sectionText: this.tournamentSection.title,
         byes: this.byes,
         payment: this.tournamentSection.entryFee
       })

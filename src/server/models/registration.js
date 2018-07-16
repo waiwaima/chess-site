@@ -12,6 +12,7 @@ const schema = new Schema({
   phone: Number,
   tournament: String,
   section: String,
+  sectionText: String,
   byes: [String],
   payment: Number,
   timestamp: String

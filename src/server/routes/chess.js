@@ -300,14 +300,13 @@ module.exports = function () {
           }
         })
         let byeRequests = (req.body.byes && req.body.byes.length > 0) ? 'Round ' + req.body.byes.join(',') : 'None'
-        let section = req.body.section.charAt(0).toUpperCase() + req.body.section.slice(1)
         let mailOptions = {
           from: 'bostonelitechess@gmail.com',
           to: req.body.email,
-          subject: '2nd BECA Tournament Registration',
+          subject: `${ req.body.tournament } Registration`,
           text: `Thank you for registering for ${ req.body.tournament }. \
           \n\nPlayer: ${ req.body.firstName } ${ req.body.lastName } \
-          \nSection: ${ section } \
+          \nSection: ${ req.body.sectionText } \
           \nBye Requests: ${ byeRequests } \
           \nTotal Payment: $${ req.body.payment } \
           \n\nIf you have any questions or need to withdraw, please email bostonelitechess@gmail.com. \
@@ -380,6 +379,7 @@ module.exports = function () {
           phone: req.body.phone,
           tournament: req.body.tournament,
           section: req.body.section,
+          sectionText: req.body.sectionText,
           byes: req.body.byes,
           payment: req.body.payment,
           timestamp: moment().format()
