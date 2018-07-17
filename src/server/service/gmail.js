@@ -237,7 +237,8 @@ function parsePlayerId(auth) {
                       phone: player.phone,
                       tournament: player.tournament,
                       section: player.section,
-                      byes: player.byes
+                      byes: player.byes,
+                      payment: player.payment
                     }},
                     { new: true, upsert: true },
                     (err, doc) => {

@@ -24,7 +24,7 @@
         v-text-field(label="USCF ID" :mask="'########'" v-model="uscfId" required
           ref="uscfId" :rules="[() => !!uscfId || 'This field is required']")
         v-text-field(label="Rating (approx.)" v-model="rating" required
-          ref="rating" :rules="[() => !!rating || 'This field is required']")
+          ref="rating" :rules="[rules.fieldRequired(rating), rules.ratingMet(rating, tournamentSection.section)]")
         v-text-field(label="E-mail" v-model="email" required
           ref="email" :rules="[() => !!email || 'This field is required']")
         v-text-field(label="Phone" :mask="'phone'" v-model="phone" required
@@ -67,6 +67,7 @@ export default {
       lastName: null,
       uscfId: null,
       rating: null,
+      ratingMet: false,
       email: null,
       phone: null,
       strEntryFee: null,
@@ -75,7 +76,33 @@ export default {
       progressDialog: false,
       messageDialog: false,
       message: '',
-      playerOptions: []
+      playerOptions: [],
+      rules: {
+        fieldRequired: (field) => {
+          return !!field || 'This field is required'
+        },
+        ratingMet: (ratingStr, section) => {
+          let message = ''
+          let value = 0
+          if (!ratingStr) {
+            return 'This field is required'
+          }
+          value = parseInt(ratingStr)
+          if (section === 'master') {
+            this.ratingMet = (!isNaN(value) && value >= 1950)
+            message = 'Rating 1950+ is required for Master section'
+          } else if (section === 'u2000') {
+            this.ratingMet = (!isNaN(value) && value <= 2050 && value >= 1650)
+            message = 'Rating 1650 - 2050 is required for U2050 section'
+          } else if (section === 'u1600') {
+            this.ratingMet = (!isNaN(value) && value <= 1750 && value >= 1300)
+            message = 'Rating 1300 - 1750 is required for U1750 section'
+          } else {
+            this.ratingMet = true
+          }
+          return this.ratingMet || message
+        }
+      }
     }
   },
   computed: {
@@ -95,7 +122,7 @@ export default {
       }
     }),
     inputValidated () {
-      return (!!this.firstName && !!this.lastName && !!this.uscfId && !!this.rating && !!this.email && !!this.phone)
+      return (!!this.firstName && !!this.lastName && !!this.uscfId && !!this.rating && this.ratingMet && !!this.email && !!this.phone)
     }
   },
   methods: {
