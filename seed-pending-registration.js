@@ -280,7 +280,7 @@ function parsePlayerId(auth) {
                     service: 'gmail',
                     auth: {
                       user: 'bostonelitechess@gmail.com',
-                      pass: 'temp1234@'
+                      pass: 'xxxx'
                     }
                   })
                   let byeRequests = (player.byes && player.byes.length > 0) ? 'Round ' + player.byes.join(',') : 'None'
