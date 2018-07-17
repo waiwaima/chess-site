@@ -199,6 +199,7 @@ export default {
               rating: data[i].rating,
               id: data[i].uscfId,
               state: data[i].state,
+              section: data[i].section,
               byes: (data[i].byes && data[i].byes.length > 0) ? 'Round ' + data[i].byes.join(',') : ''
             })
           }
