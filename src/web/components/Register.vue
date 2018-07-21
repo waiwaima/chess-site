@@ -37,7 +37,9 @@
             v-checkbox(label="Round 2" v-model="byes" value="2")
             v-checkbox(label="Round 3" v-model="byes" value="3")
         v-text-field(label="Section" v-model="tournamentSection.title" disabled)
-        v-text-field(label="Entry Fee" v-model="strEntryFee" disabled)
+        v-layout(row wrap justify-start align-center)
+          v-text-field.pr-3.entry-fee(label="Entry Fee" v-model="strEntryFee" disabled)
+          v-checkbox.discount(label="$20 discount for first time participant" v-model="discount" hide-details)
         v-layout.mt-2(row justify-center)
           v-btn(round :disabled="!inputValidated" @click.native="gotoPaypal") Submit
           v-dialog(v-model="progressDialog" max-width="290")
@@ -71,6 +73,7 @@ export default {
       email: null,
       phone: null,
       strEntryFee: null,
+      discount: false,
       byes: [],
       items: [],
       progressDialog: false,
@@ -109,13 +112,14 @@ export default {
     ...mapState({
       tournamentSection (state) {
         console.log(state.tournamentSection.name)
-        this.strEntryFee = '$' + state.tournamentSection.entryFee
+        this.entryFee = state.tournamentSection.entryFee
+        this.strEntryFee = '$' + this.entryFee
         this.items = []
         this.items.push({
           'name': state.tournamentSection.name,
           'description': state.tournamentSection.title + ' section',
           'quantity': '1',
-          'price': state.tournamentSection.entryFee,
+          'price': this.entryFee,
           'currency': 'USD'
         })
         return state.tournamentSection
@@ -123,6 +127,12 @@ export default {
     }),
     inputValidated () {
       return (!!this.firstName && !!this.lastName && !!this.uscfId && !!this.rating && this.ratingMet && !!this.email && !!this.phone)
+    }
+  },
+  watch: {
+    discount: function (val, oldVal) {
+      this.entryFee = val ? this.entryFee - 20 : this.entryFee + 20
+      this.strEntryFee = '$' + this.entryFee
     }
   },
   methods: {
@@ -142,7 +152,7 @@ export default {
         section: this.tournamentSection.section,
         sectionText: this.tournamentSection.title,
         byes: this.byes,
-        payment: this.tournamentSection.entryFee
+        payment: this.entryFee
       })
         .then(response => {
           // let business = 'yongzhi_chen-facilitator@yahoo.com'
@@ -155,7 +165,7 @@ export default {
           params.push('item_number=0916')
           params.push('on0=' + this.uscfId)
           params.push('os0=' + this.firstName + ' ' + this.lastName)
-          params.push('amount=' + this.tournamentSection.entryFee)
+          params.push('amount=' + this.entryFee)
           params.push('currency_code=USD')
           params.push('button_subtype=products')
           params.push('add=1')
@@ -195,7 +205,7 @@ export default {
         section: this.tournamentSection.section,
         sectionText: this.tournamentSection.title,
         byes: this.byes,
-        payment: this.tournamentSection.entryFee
+        payment: this.entryFee
       })
         .then(response => {
           console.log(response.data)
@@ -277,9 +287,18 @@ export default {
 .label
   color: rgba(0, 0, 0, .54)
   font-size: 16px
+.entry-fee
+  min-width: 95px
+  width: 95px
+.discount
+  min-width: 500px
+  width: 500px
 @media screen and (max-device-width: 600px)
   .register
     padding: 16px 2px
   .card-container
     padding: 16px 8px
+  .discount
+    min-width: 300px
+    width: 300px
 </style>
