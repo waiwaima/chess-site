@@ -38,8 +38,7 @@
                     li $65 onsite
                     li GM/IM/WGM free
                 div.content
-                  span.subtitle Money Prizes
-                  span.ml-1 (with 15 paid entries):
+                  span.subtitle Guaranteed Money Prizes:
                   ul.ml-4
                     li 1st -- $400
                     li 2nd -- $200
@@ -59,8 +58,7 @@
                   li $50 by 9/15
                   li $55 onsite
               div.content
-                span.subtitle Money Prizes
-                span.ml-1 (with 20 paid entries):
+                span.subtitle Guaranteed Money Prizes:
                 ul.ml-4
                   li 1st -- $250
                   li 2nd -- $150
