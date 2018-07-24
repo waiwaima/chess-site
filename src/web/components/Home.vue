@@ -38,7 +38,8 @@
                     li $65 onsite
                     li GM/IM/WGM free
                 div.content
-                  span.subtitle Guaranteed Money Prizes:
+                  span.subtitle Money Prizes
+                  span.ml-3 (Guaranteed):
                   ul.ml-4
                     li 1st -- $400
                     li 2nd -- $200
@@ -58,7 +59,8 @@
                   li $50 by 9/15
                   li $55 onsite
               div.content
-                span.subtitle Guaranteed Money Prizes:
+                span.subtitle Money Prizes
+                span.ml-3 (Guaranteed):
                 ul.ml-4
                   li 1st -- $250
                   li 2nd -- $150
@@ -142,7 +144,7 @@
           li Please bring your own chess set and clock.
           li Contact
             span.ml-1.text-highlight Yi Wang
-            span via
+            span.ml-1 via
             span.ml-1(style="color: blue") bostonelitechess@gmail.com
             span.ml-1 if you have any questions. This tournament is listed on
             a(href="http://www.masschess.org/Events/Event_Details.aspx?Event_ID=6345" target="_blank")
@@ -151,10 +153,10 @@
         .highlight Highlights
         ul.align-left.mt-2.highlight-ml
           // li GM Ivanov and IM Shmelov confirmed to play. The confirmed GM/IMs will NOT be paired to play each other, and will not be eligible for money prize.
-          li Free GM game analysis available.
+          li US Chess Grand Prix Point: 15
+          li Top female player prize available: 1-year membership at ChessOpeningsExplained.com, sponsored by GM Eugene Perelshteyn.
+          li Free GM game analysis available by GM Leonid Kritz or GM Nadezhda Kosintseva.
           li First time players for Boston Elite Tournaments have $20 discount (refund after online registration).
-          li Top girls prize available, and will be announced before the tournament.
-          li Winner of the lower section will be invited to play in the next upper section in the next tournament. No play-up allowed otherwise.
       div.mt-3
         .highlight Rule Variations
         // div.mt-1.ml-3.mr-1.align-left
