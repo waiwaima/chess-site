@@ -156,7 +156,7 @@
           li US Chess Grand Prix Point: 15
           li Top female player prize available: 1-year membership at ChessOpeningsExplained.com, sponsored by GM Eugene Perelshteyn.
           li Free GM game analysis available by GM Leonid Kritz or GM Nadezhda Kosintseva.
-          li First time players for Boston Elite Tournaments have $20 discount (refund after online registration).
+          li First time players for Boston Elite Tournaments have $20 discount.
       div.mt-3
         .highlight Rule Variations
         // div.mt-1.ml-3.mr-1.align-left
