@@ -327,6 +327,8 @@ export default {
   .section .first, .section .other, .section .last
     margin-left: 0
     margin-right: 0
+  .highlight
+    font-size: 1.4em
   .highlight-ml
     margin-left: 28px
     margin-right: 4px

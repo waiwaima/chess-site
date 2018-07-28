@@ -1,7 +1,11 @@
 <template lang="pug">
 .venue
   v-layout.restaurant(column)
-    .highlight Nearby Restaurants
+    .highlight Hotel
+    div.mt-1.mr-1
+      span.subtitle Four Points by Sheraton Norwood
+    div.mt-1.mr-1 1125 Boston-Providence Turnpike, Norwood, MA 02062
+    .highlight.mt-3 Nearby Restaurants
     div.mt-1.mr-1
       span.subtitle On site restaurant:
     div
@@ -101,4 +105,6 @@ export default {
     padding: 16px 0
   .restaurant
     padding: 0 16px
+  .highlight
+    font-size: 1.4em
 </style>
