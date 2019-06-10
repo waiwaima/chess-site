@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"chess.members"},{"v":2,"key":{"uscfId":1,"fullName":1},"name":"uscfId_1_fullName_1","ns":"chess.members","background":true}],"uuid":"13c4132d49fb40469b62e62ca77d1dbe"}
